@@ -52,7 +52,17 @@ public class SC_Board : MonoBehaviour
 
     private void Piece_press(string t_name)
     {
-        //Debug.Log("Piece_press "+ t_name);
-        //Change_TriangleState(TrianglesContainers[t_name].transform.parent.Find("Sprite_Triangle").gameObject);
+        SetUnActiveTriangles();
+        if (TrianglesContainers.ContainsKey(t_name))
+        {
+            Debug.Log("Piece_press " + t_name);
+            Change_TriangleState(TrianglesContainers[t_name].transform.parent.Find("Sprite_Triangle").gameObject);
+        }
+
+    }
+
+    private void SetUnActiveTriangles()
+    {
+        
     }
 }

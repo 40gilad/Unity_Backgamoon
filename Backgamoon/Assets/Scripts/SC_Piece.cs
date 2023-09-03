@@ -13,12 +13,10 @@ public class SC_Piece : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+
+    private void OnMouseDown()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("calling with :");
-            //Piece_Press(transform.parent.transform.parent.name);
-        }
+        Debug.Log("calling with :");
+        Piece_Press(transform.parent.transform.parent.name);
     }
 }

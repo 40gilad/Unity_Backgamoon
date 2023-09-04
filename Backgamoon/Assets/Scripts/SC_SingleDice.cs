@@ -30,8 +30,7 @@ public class SC_SingleDice : MonoBehaviour
     void Start()
     {
         Debug.Log("Start" + name);
-        if(transform.parent.name == "Sprite_RightDicePair")
-            TurnOffAllNumbers();
+        TurnOffAllNumbers();
         TurnOnNumber(1);
     }
 

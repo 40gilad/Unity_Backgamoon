@@ -14,6 +14,7 @@ public class SC_Board : MonoBehaviour
     bool turn;
     int[] curr_dice;
     string[] last_triangle;
+    int Triangle_Calc_Sign;
 
     void Awake()
     {
@@ -30,8 +31,12 @@ public class SC_Board : MonoBehaviour
     {
         Debug.Log("Start " + name);
         assign_values_to_TrianglesContainers();
-        DiceRoller[0].SetActive(false);
-        turn = false;
+
+        /* for right to start: turn= false, Triangle_Calc_Sign = -1.    for left to start to the oppiste */
+        turn = true;
+        Triangle_Calc_Sign = 1;
+        /********************************************************************************/
+
         curr_dice[0] =0;
         curr_dice[1] = 0;
         last_triangle[0] = null;
@@ -52,12 +57,6 @@ public class SC_Board : MonoBehaviour
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
     }
 
-    void Update()
-    {
-        
-    }
-
-
     private void assign_values_to_TrianglesContainers()
     {
         /* FUNCTION ALSO SETACTIVE FALSE TO ALL TRIANGLES */
@@ -66,7 +65,6 @@ public class SC_Board : MonoBehaviour
         for (int i = 0; i < TRIANGLES_AMOUNT; i++)
         {
             currname = "Triangle" + i;
-            //Debug.Log("Awake" + currname);
             curr_triangle_transform = GameObject.Find(currname).transform;
             Change_TriangleState(curr_triangle_transform.Find("Sprite_Triangle").gameObject);
             TrianglesContainers.Add(currname, curr_triangle_transform.Find("TrianglePiecesStack").gameObject);
@@ -81,9 +79,9 @@ public class SC_Board : MonoBehaviour
     {
         SetUnActiveTriangles();
         string[] dist_triangle = new string[3];
-        dist_triangle[0]= "Triangle" + (t_num + curr_dice[0]);
-        dist_triangle[1]= "Triangle" + (t_num + curr_dice[1]);
-        dist_triangle[2] = "Triangle" + (t_num + (curr_dice[0]+curr_dice[1]));
+        dist_triangle[0]= "Triangle" + (t_num + (curr_dice[0]*Triangle_Calc_Sign));
+        dist_triangle[1]= "Triangle" + (t_num + (curr_dice[1] * Triangle_Calc_Sign));
+        dist_triangle[2] = "Triangle" + (t_num + ((curr_dice[0]+curr_dice[1]) * Triangle_Calc_Sign));
 
         for (int i = 0; i < 3; i++)
         {
@@ -110,6 +108,7 @@ public class SC_Board : MonoBehaviour
 
     void ChangeTurn()
     {
+        Triangle_Calc_Sign *= -1;
         turn = !turn;
         if (turn)
         {

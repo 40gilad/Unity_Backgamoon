@@ -22,13 +22,11 @@ public class SC_Sprit_Triangle : MonoBehaviour
     void OnEnable()
     {
         Debug.Log("<color=yellow> SC_Sprite_Triangle OnEnable</Color>");
-        SC_Board.Turn += Turn;
         SC_Piece.Piece_Press += Piece_press;
     }
 
     void OnDisable()
     {
-        SC_Board.Turn -= Turn;
         SC_Piece.Piece_Press -= Piece_press;
     }
     private void OnMouseDown()
@@ -42,16 +40,11 @@ public class SC_Sprit_Triangle : MonoBehaviour
             int pieces_amout = Triangle_Stack.GetComponent<SC_TrianglePiecesStack>().pieces_amount;
             GameObject new_orange=Instantiate(Pieces[0]);
             new_orange.transform.parent = Triangle_Stack.transform;
-            new_orange.GetComponent<Transform>().position=new Vector3(0,(-0.7f* pieces_amout),0);
+            new_orange.GetComponent<Transform>().localPosition=new Vector3(0,(-0.7f*pieces_amout),0);
+            new_orange.GetComponent<Transform>().localScale = new Vector3(1,1,1);
             Triangle_Stack.GetComponent<SC_TrianglePiecesStack>().pieces_amount++;
+            Debug.Log("new orange added to: "+new_orange.transform.parent.transform.parent.name);
         }
-    }
-    void Turn(int t)
-    {
-        Debug.Log("SC_Sprit_Triangle Turn got "+t);
-        turn = (t == 1);
-        Debug.Log("SC_Sprit_Triangle Turn= "+turn);
-
     }
 
     void Piece_press(int t_num)

@@ -1,1 +1,10 @@
-kaki
+/.vs/
+/.vsconfig
+/Assembly-CSharp.csproj
+/Backgamoon.sln
+/Library
+/Logs
+/Packages
+/Temp
+/UserSettings
+/obj

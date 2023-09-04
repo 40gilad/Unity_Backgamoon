@@ -15,6 +15,7 @@ public class SC_Board : MonoBehaviour
     int[] curr_dice;
     string[] last_triangle;
     int Triangle_Calc_Sign;
+    SC_Piece Piece_Script;
 
     void Awake()
     {
@@ -110,8 +111,9 @@ public class SC_Board : MonoBehaviour
         }
     }
 
-    void ChangeTurn()
+    public void ChangeTurn()
     {
+        SetUnActiveTriangles();
         Triangle_Calc_Sign *= -1;
         turn = !turn;
 

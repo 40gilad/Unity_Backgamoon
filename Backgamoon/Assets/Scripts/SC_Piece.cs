@@ -8,9 +8,10 @@ public class SC_Piece : MonoBehaviour
 {
     public delegate void Piece_Press_Handler(int n);
     public static Piece_Press_Handler Piece_Press;
-    bool turn;
+    public bool turn;
 
     #region MonoBehaviour functions and overload
+
     void Start()
     {
         turn = false;
@@ -48,6 +49,7 @@ public class SC_Piece : MonoBehaviour
     {
         string triangle_name = transform.parent.transform.parent.name;
         Piece_Press(int.Parse(triangle_name.Substring(8)));
+        gameObject.SetActive(false);
     }
 
     private void Turn(int t)

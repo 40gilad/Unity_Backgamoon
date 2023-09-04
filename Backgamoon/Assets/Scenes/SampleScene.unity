@@ -260,7 +260,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1437052592024718114, guid: d7d6340924e8e8644b7f650c8a52ed55, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -630,7 +631,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1437052592024718114, guid: d7d6340924e8e8644b7f650c8a52ed55, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -704,7 +706,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -646276914530862788, guid: f6403d64a9e8cfa4082917d5b8606f41, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -778,7 +781,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice6
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 419722176751477436, guid: a573f65f3fee3384494905547c011a12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -852,7 +856,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice6
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 419722176751477436, guid: a573f65f3fee3384494905547c011a12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1121,6 +1126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 696593040}
+  - component: {fileID: 696593041}
   m_Layer: 0
   m_Name: RightDice
   m_TagString: Untagged
@@ -1149,6 +1155,18 @@ Transform:
   - {fileID: 326226531}
   m_Father: {fileID: 1245491405}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &696593041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696593039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c719dab8eb1b2d048888fe7c2e48f4ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &794576520
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1286,7 +1304,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6309308815767215943, guid: 4ce282553014a3f45aa80914388d7dea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1539,7 +1558,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -3505820799830018583, guid: df889a4e164b8be4b8fe4f6c7a30e873, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1659,7 +1679,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6309308815767215943, guid: 4ce282553014a3f45aa80914388d7dea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1681,7 +1702,6 @@ GameObject:
   - component: {fileID: 1274864744}
   - component: {fileID: 1274864743}
   - component: {fileID: 1274864742}
-  - component: {fileID: 1274864746}
   - component: {fileID: 1274864747}
   m_Layer: 0
   m_Name: Sprite_LeftRollDice
@@ -1770,18 +1790,6 @@ RectTransform:
   m_AnchoredPosition: {x: -6.5, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1274864746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1274864741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7535f9fac92a3304abb2d47a83a8b328, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &1274864747
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2038,7 +2046,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -646276914530862788, guid: f6403d64a9e8cfa4082917d5b8606f41, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2112,7 +2121,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -3505820799830018583, guid: df889a4e164b8be4b8fe4f6c7a30e873, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2260,7 +2270,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8019353479337065035, guid: c27b57ee36549e440a34b80a3a741f12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2366,8 +2377,8 @@ GameObject:
   - component: {fileID: 1806737406}
   - component: {fileID: 1806737405}
   - component: {fileID: 1806737408}
-  - component: {fileID: 1806737410}
   - component: {fileID: 1806737409}
+  - component: {fileID: 1806737410}
   m_Layer: 0
   m_Name: Sprite_RightRollDice
   m_TagString: Untagged
@@ -2595,6 +2606,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2116543269}
+  - component: {fileID: 2116543270}
   m_Layer: 0
   m_Name: LeftDice
   m_TagString: Untagged
@@ -2623,6 +2635,18 @@ Transform:
   - {fileID: 463298734}
   m_Father: {fileID: 1245491405}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2116543270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2116543268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c719dab8eb1b2d048888fe7c2e48f4ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2144644807
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2686,7 +2710,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8019353479337065035, guid: c27b57ee36549e440a34b80a3a741f12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

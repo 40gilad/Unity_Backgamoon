@@ -5,14 +5,23 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class SC_Board : MonoBehaviour
 {
+    public delegate void Turn_Handler(int t);
+    public static Turn_Handler Turn;
+    GameObject[] DiceRoller=null;
     private static int TRIANGLES_AMOUNT = 24;
     private float PieceStackDist = 0.7f;
     Dictionary<string, GameObject> TrianglesContainers;
+    bool turn;
 
     void Awake()
     {
+        DiceRoller = new GameObject[2];
+        DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
+        DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
+        DiceRoller[0].SetActive(false);
         TrianglesContainers = new Dictionary<string, GameObject>();
         assign_values_to_TrianglesContainers();
+        turn=false;
     }
 
     void OnEnable()
@@ -29,6 +38,12 @@ public class SC_Board : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void Start()
+    {
+        Debug.Log("start SC_Board");
+        ChangeTurn(); 
     }
 
     private void assign_values_to_TrianglesContainers()
@@ -64,5 +79,22 @@ public class SC_Board : MonoBehaviour
     private void SetUnActiveTriangles()
     {
         
+    }
+
+    void ChangeTurn()
+    {
+        turn = !turn;
+        if (turn)
+        {
+            DiceRoller[0].SetActive(false);
+            DiceRoller[1].SetActive(true);
+            Turn(1);
+        }
+        else
+        {
+            DiceRoller[0].SetActive(true);
+            DiceRoller[1].SetActive(false);
+            Turn(0);
+        }
     }
 }

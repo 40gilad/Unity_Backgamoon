@@ -13,6 +13,7 @@ public class SC_Board : MonoBehaviour
     Dictionary<string, GameObject> TrianglesContainers;
     bool turn;
     int[] curr_dice;
+    string[] last_triangle;
 
     void Awake()
     {
@@ -22,6 +23,7 @@ public class SC_Board : MonoBehaviour
         DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
         TrianglesContainers = new Dictionary<string, GameObject>();
         curr_dice=new int[2];
+        last_triangle = new string[3];
     }
 
     void Start()
@@ -32,6 +34,9 @@ public class SC_Board : MonoBehaviour
         turn = false;
         curr_dice[0] =0;
         curr_dice[1] = 0;
+        last_triangle[0] = null;
+        last_triangle[1] = null;
+        last_triangle[2] = null;
         ChangeTurn();
 
     }
@@ -74,7 +79,7 @@ public class SC_Board : MonoBehaviour
 
     private void Piece_press(int t_num)
     {
-        //SetUnActiveTriangles();
+        SetUnActiveTriangles();
         string[] dist_triangle = new string[3];
         dist_triangle[0]= "Triangle" + (t_num + curr_dice[0]);
         dist_triangle[1]= "Triangle" + (t_num + curr_dice[1]);
@@ -84,7 +89,11 @@ public class SC_Board : MonoBehaviour
         {
 
             if (TrianglesContainers.ContainsKey(dist_triangle[i]))
+            {
                 Change_TriangleState(TrianglesContainers[dist_triangle[i]].transform.parent.Find("Sprite_Triangle").gameObject);
+                last_triangle[i] = dist_triangle[i];
+            }
+            else last_triangle[i] = null;
         }
 
 
@@ -92,7 +101,11 @@ public class SC_Board : MonoBehaviour
 
     private void SetUnActiveTriangles()
     {
-        
+        for (int i = 0; i < 3; i++)
+        {
+            if(last_triangle[i]!=null)
+                Change_TriangleState(TrianglesContainers[last_triangle[i]].transform.parent.Find("Sprite_Triangle").gameObject);
+        }
     }
 
     void ChangeTurn()

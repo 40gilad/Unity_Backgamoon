@@ -6,6 +6,7 @@ using UnityEngine;
 public class SC_SingleDice : MonoBehaviour
 {
     GameObject[] DiceNumbers = null;
+    /*
     void OnEnable()
     {
         SC_DicePair.Set_Dice_Number += Set_Dice_Number;
@@ -17,20 +18,21 @@ public class SC_SingleDice : MonoBehaviour
         SC_DicePair.Set_Dice_Number -= Set_Dice_Number;
 
     }
+    */
     void Awake()
     {
-        Debug.Log(name);
+        Debug.Log("Awake "+name);
         DiceNumbers=new GameObject[6];
-        for (int i=0; i < 6; i++){
-            DiceNumbers[i] = GameObject.Find("Dice" + (i + 1));
-        }
-        TurnOffAllNumbers();
-        TurnOnNumber(6);
+        for (int i=0; i < 6; i++)
+            DiceNumbers[i] = transform.Find("Dice" + (i + 1)).gameObject;
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("Start" + name);
+        if(transform.parent.name == "Sprite_RightDicePair")
+            TurnOffAllNumbers();
+        TurnOnNumber(1);
     }
 
     // Update is called once per frame
@@ -42,23 +44,16 @@ public class SC_SingleDice : MonoBehaviour
     void TurnOffAllNumbers()
     {
         for(int i = 0; i < 6; i++)
-        {
-            DiceNumbers[i].SetActive(false);
-        }
+           DiceNumbers[i].SetActive(false);
     }
 
     void TurnOnNumber(int n)
     {
-        Debug.Log(name +" TurnOnNumber(" + n + ")");
         DiceNumbers[n-1].SetActive(true);
     }
-    private void Set_Dice_Number(int num, string DiceName)
+    public void Set_Dice_Number(int num)
     {
-        Debug.Log("Set_Dice_Number( " + num + ", " + DiceName+". My name: "+ name);
-        if (DiceName == name)
-        {
             TurnOffAllNumbers();
             TurnOnNumber(num);
-        }
     }
 }

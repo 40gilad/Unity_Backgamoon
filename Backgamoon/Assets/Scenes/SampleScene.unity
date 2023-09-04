@@ -136,6 +136,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice2
       objectReference: {fileID: 0}
+    - target: {fileID: 896727870779288857, guid: 4ce282553014a3f45aa80914388d7dea,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1850380490948778489, guid: 4ce282553014a3f45aa80914388d7dea,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -186,7 +191,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6309308815767215943, guid: 4ce282553014a3f45aa80914388d7dea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -335,7 +341,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1437052592024718114, guid: d7d6340924e8e8644b7f650c8a52ed55, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -409,7 +416,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice6
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 419722176751477436, guid: a573f65f3fee3384494905547c011a12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -483,7 +491,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -3505820799830018583, guid: df889a4e164b8be4b8fe4f6c7a30e873, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -557,7 +566,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -646276914530862788, guid: f6403d64a9e8cfa4082917d5b8606f41, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1023,7 +1033,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 1693574518518498024, guid: df889a4e164b8be4b8fe4f6c7a30e873,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -3505820799830018583, guid: df889a4e164b8be4b8fe4f6c7a30e873, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1043,8 +1059,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 644366030}
+  - component: {fileID: 644366031}
   m_Layer: 0
-  m_Name: RightDice
+  m_Name: LeftDice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1071,6 +1088,18 @@ Transform:
   - {fileID: 195614472}
   m_Father: {fileID: 646213235}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &644366031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644366029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575c25a724c9f184da4142741eddb4d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &646213234
 GameObject:
   m_ObjectHideFlags: 0
@@ -1117,6 +1146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c719dab8eb1b2d048888fe7c2e48f4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyDice: []
 --- !u!1 &696593039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1128,7 +1158,7 @@ GameObject:
   - component: {fileID: 696593040}
   - component: {fileID: 696593041}
   m_Layer: 0
-  m_Name: RightDice
+  m_Name: LeftDice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1164,7 +1194,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 696593039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c719dab8eb1b2d048888fe7c2e48f4ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 575c25a724c9f184da4142741eddb4d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &794576520
@@ -1179,6 +1209,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Dice5
+      objectReference: {fileID: 0}
+    - target: {fileID: 291256581958079213, guid: f6403d64a9e8cfa4082917d5b8606f41,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2762942861873559208, guid: f6403d64a9e8cfa4082917d5b8606f41,
         type: 3}
@@ -1230,7 +1265,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -646276914530862788, guid: f6403d64a9e8cfa4082917d5b8606f41, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1393,8 +1429,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1060094294}
+  - component: {fileID: 1060094295}
   m_Layer: 0
-  m_Name: LeftDice
+  m_Name: RightDice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1421,6 +1458,18 @@ Transform:
   - {fileID: 1398685309}
   m_Father: {fileID: 646213235}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1060094295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060094293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575c25a724c9f184da4142741eddb4d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1090775664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1484,7 +1533,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6309308815767215943, guid: 4ce282553014a3f45aa80914388d7dea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1616,6 +1666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c719dab8eb1b2d048888fe7c2e48f4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyDice: []
 --- !u!1001 &1252295455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1703,6 +1754,7 @@ GameObject:
   - component: {fileID: 1274864743}
   - component: {fileID: 1274864742}
   - component: {fileID: 1274864747}
+  - component: {fileID: 1274864748}
   m_Layer: 0
   m_Name: Sprite_LeftRollDice
   m_TagString: Untagged
@@ -1835,6 +1887,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1274864748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274864741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7535f9fac92a3304abb2d47a83a8b328, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1310907052
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1898,7 +1962,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7548809101495662634, guid: d7d6340924e8e8644b7f650c8a52ed55,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -1437052592024718114, guid: d7d6340924e8e8644b7f650c8a52ed55, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1972,7 +2042,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice6
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7441475178149552344, guid: a573f65f3fee3384494905547c011a12,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 419722176751477436, guid: a573f65f3fee3384494905547c011a12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2196,7 +2272,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8019353479337065035, guid: c27b57ee36549e440a34b80a3a741f12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2586,7 +2663,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dice4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 1508549259520445671, guid: c27b57ee36549e440a34b80a3a741f12,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8019353479337065035, guid: c27b57ee36549e440a34b80a3a741f12, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2608,7 +2691,7 @@ GameObject:
   - component: {fileID: 2116543269}
   - component: {fileID: 2116543270}
   m_Layer: 0
-  m_Name: LeftDice
+  m_Name: RightDice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2644,7 +2727,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2116543268}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c719dab8eb1b2d048888fe7c2e48f4ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 575c25a724c9f184da4142741eddb4d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &2144644807

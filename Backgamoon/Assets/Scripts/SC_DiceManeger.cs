@@ -18,25 +18,16 @@ public class SC_DiceManeger : MonoBehaviour
         SC_Board.Turn -= Turn;
     }
 
-    void Start()
-    {
-        
-    }
 
     void Awake()
     {
-        Debug.Log(name);
+        Debug.Log("Awake "+name);
         DicePairs=new GameObject[2];
         DicePairs[0] = GameObject.Find("Sprite_LeftDicePair");
         DicePairs[1] = GameObject.Find("Sprite_RightDicePair");
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void OnMouseDown()
     {
         Debug.Log("SC_DiceManeger mouse with :"+name);
@@ -45,7 +36,7 @@ public class SC_DiceManeger : MonoBehaviour
 
     void Turn(int t)
     {
-        Debug.Log("SC_DiceManeger Turn(" + t + "):");
+        Debug.Log("<color=green> SC_DiceManeger Turn(" + t + "):</color>");
         DicePairs[t].SetActive(true);
         DicePairs[(t+1)%2].SetActive(false);
     }

@@ -15,13 +15,21 @@ public class SC_Board : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("Awake " + name);
         DiceRoller = new GameObject[2];
         DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
         DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
-        DiceRoller[0].SetActive(false);
         TrianglesContainers = new Dictionary<string, GameObject>();
+    }
+
+    void Start()
+    {
+        Debug.Log("Start " + name);
         assign_values_to_TrianglesContainers();
-        turn=false;
+        DiceRoller[0].SetActive(false);
+        turn = false;
+        ChangeTurn();
+
     }
 
     void OnEnable()
@@ -40,11 +48,6 @@ public class SC_Board : MonoBehaviour
         
     }
 
-    void Start()
-    {
-        Debug.Log("start SC_Board");
-        ChangeTurn(); 
-    }
 
     private void assign_values_to_TrianglesContainers()
     {
@@ -70,7 +73,7 @@ public class SC_Board : MonoBehaviour
         SetUnActiveTriangles();
         if (TrianglesContainers.ContainsKey(t_name))
         {
-            Debug.Log("Piece_press " + t_name);
+            //Debug.Log("Piece_press " + t_name);
             Change_TriangleState(TrianglesContainers[t_name].transform.parent.Find("Sprite_Triangle").gameObject);
         }
 

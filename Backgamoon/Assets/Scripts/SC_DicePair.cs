@@ -7,7 +7,7 @@ public class SC_DicePair : MonoBehaviour
 {
     public delegate void Set_Dice_Number_Handler(int num,string DiceName);
     public static Set_Dice_Number_Handler Set_Dice_Number;
-    GameObject[] MyDice;
+    public SC_SingleDice[] MyDice;
     int[] DiceRolled;
 
     void OnEnable()
@@ -22,30 +22,22 @@ public class SC_DicePair : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log(name);
+        Debug.Log("Awake "+name);
         DiceRolled = new int[2];
-        MyDice = new GameObject[2];
-        MyDice[0] = GameObject.Find("LeftDice");
-        MyDice[1] = GameObject.Find("RightDice");
+        MyDice = new SC_SingleDice[2];
+        MyDice[0] = transform.Find("LeftDice").GetComponent<SC_SingleDice>();
+        MyDice[1] = transform.Find("RightDice").GetComponent<SC_SingleDice>();
 
     }
 
-    void Start()
-    {
 
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void Roll_Dice(int left, int right=0)
     {
-        Debug.Log(name+ " Dice Rolled: " + left +" , "+ right);
-        Set_Dice_Number(left, MyDice[0].name);
-        Set_Dice_Number(right, MyDice[1].name);
+        Debug.Log("Roll_Dice :" + left+"," + right);
+        MyDice[0].Set_Dice_Number(left);
+        MyDice[1].Set_Dice_Number(right);
 
     }
 }

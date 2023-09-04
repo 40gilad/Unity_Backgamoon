@@ -32,7 +32,7 @@ public class SC_Board : MonoBehaviour
         Debug.Log("Start " + name);
         assign_values_to_TrianglesContainers();
 
-        /* for right to start: turn= false, Triangle_Calc_Sign = -1.    for left to start to the oppiste */
+        /* for right to start: turn= false, Triangle_Calc_Sign = -1.    for left to start do the oppiste */
         turn = true;
         Triangle_Calc_Sign = 1;
         /********************************************************************************/
@@ -101,8 +101,11 @@ public class SC_Board : MonoBehaviour
     {
         for (int i = 0; i < 3; i++)
         {
-            if(last_triangle[i]!=null)
+            if (last_triangle[i] != null)
+            {
                 Change_TriangleState(TrianglesContainers[last_triangle[i]].transform.parent.Find("Sprite_Triangle").gameObject);
+                last_triangle[i] = null;
+            }
         }
     }
 

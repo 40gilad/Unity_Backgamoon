@@ -11,7 +11,7 @@ public class SC_Board : MonoBehaviour
     private static int TRIANGLES_AMOUNT = 24;
     private float PieceStackDist = 0.7f;
     Dictionary<string, GameObject> TrianglesContainers;
-    bool turn;
+    bool turn; // true= orange turn false= green turn
     int[] curr_dice;
     string[] last_triangle;
     int Triangle_Calc_Sign;
@@ -32,9 +32,9 @@ public class SC_Board : MonoBehaviour
         Debug.Log("Start " + name);
         assign_values_to_TrianglesContainers();
 
-        /* for right to start: turn= false, Triangle_Calc_Sign = -1.    for left to start do the oppiste */
-        turn = true;
-        Triangle_Calc_Sign = 1;
+        /*opposite logic: for orange to start: turn= false, Triangle_Calc_Sign = -1.    for left to start do the oppiste */
+        turn = false;
+        Triangle_Calc_Sign = -1;
         /********************************************************************************/
 
         curr_dice[0] =0;
@@ -85,7 +85,8 @@ public class SC_Board : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-
+            if (i ==0 && dist_triangle[i] == dist_triangle[i + 1]) // if dice is double
+                continue;
             if (TrianglesContainers.ContainsKey(dist_triangle[i]))
             {
                 Change_TriangleState(TrianglesContainers[dist_triangle[i]].transform.parent.Find("Sprite_Triangle").gameObject);
@@ -113,6 +114,8 @@ public class SC_Board : MonoBehaviour
     {
         Triangle_Calc_Sign *= -1;
         turn = !turn;
+
+        Debug.Log("Changing turns to: " + turn);
         if (turn)
         {
             DiceRoller[0].SetActive(false);

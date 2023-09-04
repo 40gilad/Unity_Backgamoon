@@ -12,6 +12,7 @@ public class SC_Board : MonoBehaviour
     private float PieceStackDist = 0.7f;
     Dictionary<string, GameObject> TrianglesContainers;
     bool turn;
+    int[] curr_dice;
 
     void Awake()
     {
@@ -20,6 +21,7 @@ public class SC_Board : MonoBehaviour
         DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
         DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
         TrianglesContainers = new Dictionary<string, GameObject>();
+        curr_dice=new int[2];
     }
 
     void Start()
@@ -28,19 +30,21 @@ public class SC_Board : MonoBehaviour
         assign_values_to_TrianglesContainers();
         DiceRoller[0].SetActive(false);
         turn = false;
+        curr_dice[0] =0;
+        curr_dice[1] = 0;
         ChangeTurn();
 
     }
-
     void OnEnable()
     {
+        SC_DiceManeger.Roll_Dice += Roll_Dice;
         SC_Piece.Piece_Press += Piece_press;
     }
 
     private void OnDisable()
     {
         SC_Piece.Piece_Press -= Piece_press;
-
+        SC_DiceManeger.Roll_Dice -= Roll_Dice;
     }
 
     void Update()
@@ -68,14 +72,21 @@ public class SC_Board : MonoBehaviour
         t.SetActive(!t.activeSelf);
     }
 
-    private void Piece_press(string t_name)
+    private void Piece_press(int t_num)
     {
-        SetUnActiveTriangles();
-        if (TrianglesContainers.ContainsKey(t_name))
+        //SetUnActiveTriangles();
+        string[] dist_triangle = new string[3];
+        dist_triangle[0]= "Triangle" + (t_num + curr_dice[0]);
+        dist_triangle[1]= "Triangle" + (t_num + curr_dice[1]);
+        dist_triangle[2] = "Triangle" + (t_num + (curr_dice[0]+curr_dice[1]));
+
+        for (int i = 0; i < 3; i++)
         {
-            //Debug.Log("Piece_press " + t_name);
-            Change_TriangleState(TrianglesContainers[t_name].transform.parent.Find("Sprite_Triangle").gameObject);
+
+            if (TrianglesContainers.ContainsKey(dist_triangle[i]))
+                Change_TriangleState(TrianglesContainers[dist_triangle[i]].transform.parent.Find("Sprite_Triangle").gameObject);
         }
+
 
     }
 
@@ -99,5 +110,11 @@ public class SC_Board : MonoBehaviour
             DiceRoller[1].SetActive(false);
             Turn(0);
         }
+    }
+
+    private void Roll_Dice(int left, int right = 0)
+    {
+        curr_dice[0] = left;
+        curr_dice[1] = right;
     }
 }

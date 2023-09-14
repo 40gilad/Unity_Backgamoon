@@ -36,16 +36,9 @@ public class SC_DiceManeger : MonoBehaviour
 
     private void OnMouseDown()
     {
-        times_pressed++;
-        if (times_pressed == 1)
-        {
             //Debug.Log("SC_DiceManeger mouse with :" + name);
             Roll_Dice(Random.Range(1, 6), Random.Range(1, 6));
-        }
-        else if(times_pressed==2) {
-            board.ChangeTurn();
-            times_pressed= 0;
-        }
+
     }
 
     void Turn(int t)

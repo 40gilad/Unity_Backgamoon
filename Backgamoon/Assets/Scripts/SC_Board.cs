@@ -5,17 +5,21 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class SC_Board : MonoBehaviour
 {
+    public int limit_moves;
+    public int piece_press_counter = 0;
+    private static int TRIANGLES_AMOUNT = 24;
     public delegate void Turn_Handler(int t);
     public static Turn_Handler Turn;
+    GameObject camera = null;
     GameObject[] DiceRoller=null;
-    private static int TRIANGLES_AMOUNT = 24;
-    private float PieceStackDist = 0.7f;
     Dictionary<string, GameObject> TrianglesContainers;
     bool turn; // true= orange turn false= green turn
     int[] curr_dice;
     string[] last_triangle;
     int Triangle_Calc_Sign;
     SC_Piece Piece_Script;
+    string[] dist_triangle = new string[2];
+
 
     void Awake()
     {
@@ -34,10 +38,13 @@ public class SC_Board : MonoBehaviour
         assign_values_to_TrianglesContainers();
 
         /*opposite logic: for orange to start: turn= false, Triangle_Calc_Sign = -1.    for left to start do the oppiste */
+        /* for single player, disable camera variable */
         turn = false;
         Triangle_Calc_Sign = -1;
         /********************************************************************************/
 
+        limit_moves = 2;
+        camera = GameObject.Find("Main Camera");
         curr_dice[0] =0;
         curr_dice[1] = 0;
         last_triangle[0] = null;
@@ -50,12 +57,27 @@ public class SC_Board : MonoBehaviour
     {
         SC_DiceManeger.Roll_Dice += Roll_Dice;
         SC_Piece.Piece_Press += Piece_press;
+        SC_Sprite_Triangle.turn_me_off += turn_off_triangle;
     }
 
     private void OnDisable()
     {
         SC_Piece.Piece_Press -= Piece_press;
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
+        SC_Sprite_Triangle.turn_me_off -= turn_off_triangle;
+
+    }
+
+    private void turn_off_triangle(GameObject g)
+    {
+        Debug.Log("Booard turn_off_triangle " + g.name);
+        Change_TriangleState(g);
+        if (g.transform.parent.name == dist_triangle[0])
+            dist_triangle[0] = null;
+        else if (g.transform.parent.name == dist_triangle[1])
+            dist_triangle[1] = null;
+
+
     }
 
     private void assign_values_to_TrianglesContainers()
@@ -78,16 +100,19 @@ public class SC_Board : MonoBehaviour
 
     private void Piece_press(int t_num)
     {
-        SetUnActiveTriangles();
-        string[] dist_triangle = new string[3];
+        Debug.Log("piece counter= " + piece_press_counter);
+        //SetUnActiveTriangles();
         dist_triangle[0]= "Triangle" + (t_num + (curr_dice[0]*Triangle_Calc_Sign));
         dist_triangle[1]= "Triangle" + (t_num + (curr_dice[1] * Triangle_Calc_Sign));
-        dist_triangle[2] = "Triangle" + (t_num + ((curr_dice[0]+curr_dice[1]) * Triangle_Calc_Sign));
+        //dist_triangle[2] = "Triangle" + (t_num + ((curr_dice[0]+curr_dice[1]) * Triangle_Calc_Sign));  //triangle of the sum of the dice. to activate this, dist_triangle should be [3] and also in for loop change to 3
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
-            if (i ==0 && dist_triangle[i] == dist_triangle[i + 1]) // if dice is double
+            if (i == 0 && dist_triangle[i] == dist_triangle[i + 1]) // if dice is double
+            {
+                limit_moves = 4;
                 continue;
+            }
             if (TrianglesContainers.ContainsKey(dist_triangle[i]))
             {
                 Change_TriangleState(TrianglesContainers[dist_triangle[i]].transform.parent.Find("Sprite_Triangle").gameObject);
@@ -99,6 +124,7 @@ public class SC_Board : MonoBehaviour
 
     }
 
+    /*
     private void SetUnActiveTriangles()
     {
         for (int i = 0; i < 3; i++)
@@ -110,22 +136,29 @@ public class SC_Board : MonoBehaviour
             }
         }
     }
+    */
 
     public void ChangeTurn()
     {
-        SetUnActiveTriangles();
+
+        Vector3 rotation;
+        //SetUnActiveTriangles();
         Triangle_Calc_Sign *= -1;
         turn = !turn;
 
         Debug.Log("BOARD Changing turns to: " + turn);
         if (turn)
         {
+            rotation = new Vector3(0, 0, 0);
+            camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
             DiceRoller[0].SetActive(false);
             DiceRoller[1].SetActive(true);
             Turn(1);
         }
         else
         {
+            rotation = new Vector3(0, 0, 180);
+            camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
             DiceRoller[0].SetActive(true);
             DiceRoller[1].SetActive(false);
             Turn(0);

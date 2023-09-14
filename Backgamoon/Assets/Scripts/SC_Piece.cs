@@ -29,7 +29,6 @@ public class SC_Piece : MonoBehaviour
 
     private void OnMouseDown()
     {
-        //Debug.Log("<color=purple>SC_PIECE " + name+"</Color>");
         string piece_color = name.Substring(0, 5);
             handle_after_rolling(piece_color);
     }

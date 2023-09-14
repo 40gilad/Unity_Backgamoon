@@ -17,7 +17,7 @@ public class SC_SingleDice : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start" + name);
+        //Debug.Log("Start" + name);
         TurnOffAllNumbers();
         TurnOnNumber(1);
     }

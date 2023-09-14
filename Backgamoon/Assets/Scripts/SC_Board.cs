@@ -30,7 +30,7 @@ public class SC_Board : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start " + name);
+        //Debug.Log("Start " + name);
         assign_values_to_TrianglesContainers();
 
         /*opposite logic: for orange to start: turn= false, Triangle_Calc_Sign = -1.    for left to start do the oppiste */
@@ -117,7 +117,7 @@ public class SC_Board : MonoBehaviour
         Triangle_Calc_Sign *= -1;
         turn = !turn;
 
-        Debug.Log("Changing turns to: " + turn);
+        Debug.Log("BOARD Changing turns to: " + turn);
         if (turn)
         {
             DiceRoller[0].SetActive(false);

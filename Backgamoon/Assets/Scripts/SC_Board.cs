@@ -7,6 +7,15 @@ public class SC_Board : MonoBehaviour
 {
     public delegate void Turn_Handler(bool t);
     public static Turn_Handler Turn;
+    public Dictionary<string, int> flags;
+
+    /************************************************************************************************/
+    /*
+     * flags["turn_stage"]: 
+     * 0 waiting for throw
+     * 1 threw
+     * 
+     */
 
     GameObject camera = null;
     GameObject[] DiceRoller=null;
@@ -14,7 +23,7 @@ public class SC_Board : MonoBehaviour
     int[] curr_dice;
 
     bool turn; // true= orange turn false= green turn
-    bool multiplayer;
+    public bool multiplayer = true;
 
     void Awake()
     {
@@ -22,22 +31,19 @@ public class SC_Board : MonoBehaviour
         DiceRoller = new GameObject[2];
         DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
         DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
-        curr_dice=new int[2];
+        if(multiplayer)
+            camera = GameObject.Find("Main Camera");
+        flags= new Dictionary<string, int>();
+        curr_dice = new int[2];
     }
 
     void Start()
     {
-
-        /***************************************************************************************************************************/
-
-                /* for orange to start: turn= true    ,    for green to start do the oppiste */
-        turn = true;
-        multiplayer= true;
-        /***************************************************************************************************************************/
-
-        camera = GameObject.Find("Main Camera");
+        /* for orange to start: turn= false */
+        turn = false;
         curr_dice[0] =0;
         curr_dice[1] = 0;
+        init_flags();
         ChangeTurn();
 
     }
@@ -53,6 +59,10 @@ public class SC_Board : MonoBehaviour
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
     }
 
+    private void init_flags()
+    {
+        flags.Add("turn_stage", 0);
+    }
 
 
     private void Piece_press(int n)
@@ -63,10 +73,10 @@ public class SC_Board : MonoBehaviour
 
     public void ChangeTurn()
     {
-        rotate_camera();
         turn = !turn;
-        DiceRoller[0].SetActive(turn);
-        DiceRoller[1].SetActive(!turn);
+        rotate_camera();
+        DiceRoller[0].SetActive(!turn);
+        DiceRoller[1].SetActive(turn);
         Turn(turn);
     }
 
@@ -88,6 +98,7 @@ public class SC_Board : MonoBehaviour
 
     private void Roll_Dice(int left, int right = 0)
     {
+        flags["turn_stage"] = 1;
         curr_dice[0] = left;
         curr_dice[1] = right;
     }

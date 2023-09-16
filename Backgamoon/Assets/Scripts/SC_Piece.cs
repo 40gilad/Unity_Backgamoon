@@ -51,9 +51,9 @@ public class SC_Piece : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void Turn(int t)
+    private void Turn(bool t)
     {
-        turn = (t == 1);
+        turn =t;
     }
 
     #endregion

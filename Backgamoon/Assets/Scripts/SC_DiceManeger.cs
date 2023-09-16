@@ -19,16 +19,6 @@ public class SC_DiceManeger : MonoBehaviour
 
     }
 
-    void OnEnable()
-    {
-        SC_Board.Turn += Turn;
-    }
-
-    void OnDisable()
-    {
-        SC_Board.Turn -= Turn;
-    }
-
     void Start()
     {
         times_pressed = 0; 
@@ -36,15 +26,8 @@ public class SC_DiceManeger : MonoBehaviour
 
     private void OnMouseDown()
     {
-            //Debug.Log("SC_DiceManeger mouse with :" + name);
-            Roll_Dice(Random.Range(1, 6), Random.Range(1, 6));
-
+        Roll_Dice(Random.Range(1, 6), Random.Range(1, 6));
+        gameObject.SetActive(false);
     }
 
-    void Turn(int t)
-    {
-        Debug.Log("<color=green> SC_DiceManeger Turn(" + t + "):</color>");
-        DicePairs[t].SetActive(true);
-        DicePairs[(t+1)%2].SetActive(false);
-    }
 }

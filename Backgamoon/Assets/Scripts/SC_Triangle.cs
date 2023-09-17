@@ -12,7 +12,7 @@ public class SC_Triangle : MonoBehaviour
     void Awake()
     {
         Debug.Log("Awake" + name);
-        Triangle_Stack= GameObject.Find("TrianglePiecesStack").GetComponent<SC_TrianglePiecesStack>();
+        Triangle_Stack= transform.Find("TrianglePiecesStack").GetComponent<SC_TrianglePiecesStack>();
     }
 
     private void Start()

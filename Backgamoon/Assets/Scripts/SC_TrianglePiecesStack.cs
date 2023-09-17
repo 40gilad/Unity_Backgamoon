@@ -6,7 +6,7 @@ using UnityEngine;
 public class SC_TrianglePiecesStack : MonoBehaviour
 {
     public char stack_color;
-    public int pieces_amount;
+    public int top;
     // Start is called before the first frame update
 
     #region MonoBehaviour
@@ -18,25 +18,37 @@ public class SC_TrianglePiecesStack : MonoBehaviour
     #endregion
     private void check_my_color()
     {
-        if (pieces_amount > 0)
+        if (top > 0)
             stack_color = transform.GetChild(0).gameObject.name[0];
-        Debug.Log("SC_TrianglePiecesStack color = " + stack_color);
     }
 
     #region Public Methods
     public bool is_stack_empty()
     {
-        return (pieces_amount == 0);
+        return (top == 0);
     }
 
     public bool is_vunarable()
     {
-        return (pieces_amount == 1);
+        return (top == 1);
     }
     
     public char get_stack_color()
     {
         return stack_color;
+    }
+
+    public void pop_piece()
+    {
+        Debug.Log("pop_piece");
+        string piece_2_destroy;
+        if (stack_color == 'O')
+            piece_2_destroy = "OrangePiece" + top--;
+        else if (stack_color == 'G')
+            piece_2_destroy = "GreenPiece" + top--;
+        else
+            return;
+        Destroy(transform.Find(piece_2_destroy).gameObject);
     }
 
     #endregion

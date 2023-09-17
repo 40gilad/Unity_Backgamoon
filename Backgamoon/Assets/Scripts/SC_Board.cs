@@ -14,7 +14,7 @@ public class SC_Board : MonoBehaviour
      * flags["turn_stage"]: 
      * 0 waiting for throw
      * 1 threw
-     * 
+     * 2 possible moves are on board
      */
 
     GameObject camera = null;

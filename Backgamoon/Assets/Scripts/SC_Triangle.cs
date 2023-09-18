@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SC_Triangle : MonoBehaviour
@@ -35,13 +36,26 @@ public class SC_Triangle : MonoBehaviour
         return Triangle_Stack.is_stack_empty();
     }
 
-    public bool is_vunarable()
+    public bool is_vunarable(bool turn)
     {
-        return Triangle_Stack.is_vunarable();
+        if((turn && get_stack_color()=='G') || (!turn && get_stack_color() == 'O'))
+            return Triangle_Stack.is_vunarable();
+        return false;
     }
 
     public char get_stack_color()
     {
         return Triangle_Stack.get_stack_color();
+    }
+
+    public void pop_piece()
+    {
+        Triangle_Stack.pop_piece();
+    }
+
+
+    public void push_piece(GameObject piece)
+    {
+        Triangle_Stack.push_piece(piece);
     }
 }

@@ -7,6 +7,7 @@ public class SC_TrianglePiecesStack : MonoBehaviour
 {
     public char stack_color;
     public int top;
+    private readonly float pieces_distance = -0.7f;
     // Start is called before the first frame update
 
     #region MonoBehaviour
@@ -30,6 +31,7 @@ public class SC_TrianglePiecesStack : MonoBehaviour
 
     public bool is_vunarable()
     {
+
         return (top == 1);
     }
     
@@ -40,7 +42,6 @@ public class SC_TrianglePiecesStack : MonoBehaviour
 
     public void pop_piece()
     {
-        Debug.Log("pop_piece");
         string piece_2_destroy;
         if (stack_color == 'O')
             piece_2_destroy = "OrangePiece" + top--;
@@ -49,6 +50,16 @@ public class SC_TrianglePiecesStack : MonoBehaviour
         else
             return;
         Destroy(transform.Find(piece_2_destroy).gameObject);
+    }
+
+    public void push_piece(GameObject piece)
+    {
+        
+        piece.transform.parent = transform;
+        piece.GetComponent<Transform>().localPosition = new Vector3 (0,pieces_distance*(top-1),0);
+        top++;
+
+        //refer to option when top>8 (tower)
     }
 
     #endregion

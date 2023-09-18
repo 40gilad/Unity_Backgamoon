@@ -12,6 +12,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private static int TRIANGLES_AMOUNT = 24;
     bool turn;
     int turn_moves;
+    int direction_accelerator = 0;
     SC_Board board;
     int[] curr_dice;
     int source_triangle;
@@ -33,6 +34,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         init_triangles_dict();
         init_vars();
+        direction_accelerator = 1;//needs to be set to 0
     }
     private void OnEnable()
     {
@@ -55,7 +57,13 @@ public class SC_Triangle_Maneger : MonoBehaviour
     void Turn(bool t)
     {
         turn = t;
-        Debug.Log("TManeger Change turn " + turn);
+        if (turn)
+            direction_accelerator = 1;
+        else if(!turn)
+            direction_accelerator = -1;
+        else
+            direction_accelerator = 0;
+
     }
     void pressed_triangle(string name)
     {
@@ -89,17 +97,18 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         if (is_valid_press(name))
         {
+            Debug.Log("is_valid_press dire_acc= " + direction_accelerator);
             source_triangle = get_triangle_number(name);
-            dest_triangles[0] = source_triangle + curr_dice[0];
-            dest_triangles[1] = source_triangle + curr_dice[1];
+            dest_triangles[0] = source_triangle + (curr_dice[0]*direction_accelerator);
+            dest_triangles[1] = source_triangle + (curr_dice[1]*direction_accelerator);
             //take piece from triangle
             get_triangle_script(name).pop_piece();
 
             //turn on relevant triangle (pressed,pressed+dice1, pressed+dice2
             if (curr_dice[0]!=0)
-                get_triangle_script("Triangle" + dest_triangles[0]).change_sprite_stat();
+                get_triangle_script("Triangle" + (dest_triangles[0])).change_sprite_stat();
             if (curr_dice[1]!=0)
-                get_triangle_script("Triangle" + dest_triangles[1]).change_sprite_stat();
+                get_triangle_script("Triangle" + (dest_triangles[1])).change_sprite_stat();
 
             //raise flag in SC_Board
             board.flags["turn_stage"] = 2;

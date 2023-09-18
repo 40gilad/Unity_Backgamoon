@@ -54,9 +54,9 @@ public class SC_TrianglePiecesStack : MonoBehaviour
 
     public void push_piece(GameObject piece)
     {
-        
+        Debug.Log("Push piece on " + pieces_distance +"*"+ (top)+"="+ pieces_distance* (top));
         piece.transform.parent = transform;
-        piece.GetComponent<Transform>().localPosition = new Vector3 (0,pieces_distance*(top-1),0);
+        piece.GetComponent<Transform>().localPosition = new Vector3 (0,pieces_distance*(top),0);
         top++;
 
         //refer to option when top>8 (tower)

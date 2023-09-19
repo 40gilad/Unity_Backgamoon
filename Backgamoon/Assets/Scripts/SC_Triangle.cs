@@ -23,6 +23,7 @@ public class SC_Triangle : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Debug.Log("<color=green> Triangle onmousedown</color>");
         pressed_triangle(name);
     }
 
@@ -54,8 +55,8 @@ public class SC_Triangle : MonoBehaviour
     }
 
 
-    public void push_piece(GameObject piece)
+    public void push_piece(GameObject piece,char color)
     {
-        Triangle_Stack.push_piece(piece);
+        Triangle_Stack.push_piece(piece,color);
     }
 }

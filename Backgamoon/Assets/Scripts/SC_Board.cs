@@ -17,7 +17,7 @@ public class SC_Board : MonoBehaviour
      * 2- possible moves shown on board
      */
 
-    GameObject camera = null;
+    GameObject camera;
     GameObject[] DiceRoller=null;
     int[] curr_dice;
     bool turn; // true= orange turn false= green turn

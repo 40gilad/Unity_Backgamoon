@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5633617392530018643}
   - component: {fileID: 6740036869873198102}
+  - component: {fileID: 6208471158770605953}
   m_Layer: 0
   m_Name: Sprite_Triangle
   m_TagString: Untagged
@@ -59,8 +60,8 @@ Transform:
   m_GameObject: {fileID: 4409212762933961674}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.13000011, y: 1.2400002, z: 0}
-  m_LocalScale: {x: 0.8, y: 4.3, z: 1}
+  m_LocalPosition: {x: 0.13000011, y: 1.2324, z: 2}
+  m_LocalScale: {x: 0.8, y: 4.2737703, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3058992175239761280}
@@ -282,5 +283,21 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5948476129300506149, guid: 53f13abe91d0d684aacebc5c87bc481e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6208471158770605953}
   m_SourcePrefab: {fileID: 100100000, guid: 53f13abe91d0d684aacebc5c87bc481e, type: 3}
+--- !u!114 &6208471158770605953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4409212762933961674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4170be5c06b967746b566cfaf7615ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

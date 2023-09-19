@@ -6,55 +6,13 @@ using UnityEngine;
 
 public class SC_Piece : MonoBehaviour
 {
-    public delegate void Piece_Press_Handler(int n);
-    public static Piece_Press_Handler Piece_Press;
-    public bool turn;
-
-    #region MonoBehaviour functions and overload
-
-    void Start()
+    private string OrangeName = "OrangePiece";
+    private string OreenName = "GreenPiece";
+   public void change_piece_name(int index, char color)
     {
-        turn = true;
+        if (color == 'O')
+            name = OrangeName + index;
+        else if(color == 'G')
+            name = OreenName + index;
     }
-
-    void OnEnable()
-    {
-        SC_Board.Turn += Turn;
-    }
-
-    void OnDisable()
-    {
-        SC_Board.Turn -= Turn;
-    }
-
-    private void OnMouseDown()
-    {
-        string piece_color = name.Substring(0, 5);
-            handle_after_rolling(piece_color);
-    }
-    #endregion
-
-    #region My functions
-    private void handle_after_rolling(string piece_color)
-    {
-        //turning on the relevant triangles
-        if (turn && piece_color == "Orang")
-            handle_piece_press_after_rolling();
-
-        else if (!turn && piece_color == "Green")
-            handle_piece_press_after_rolling();
-    }
-    private void handle_piece_press_after_rolling()
-    {
-        string triangle_name = transform.parent.transform.parent.name;
-        Piece_Press(int.Parse(triangle_name.Substring(8)));
-        gameObject.SetActive(false);
-    }
-
-    private void Turn(bool t)
-    {
-        turn =t;
-    }
-
-    #endregion
 }

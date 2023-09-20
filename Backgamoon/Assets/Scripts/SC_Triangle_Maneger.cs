@@ -70,12 +70,13 @@ public class SC_Triangle_Maneger : MonoBehaviour
         Debug.Log("TManeger pressed_triangle " + name);
         Debug.Log("flags= " + board.flags["turn_stage"]);
         Debug.Log("TManeger turn " + turn);
+        if (get_triangle_number(name) == -1)
+            Debug.Log("debug");
+        if (get_triangle_script(name).is_sprite_active())// need to check if sprite was pressed means that sprite is on
+             handle_press_as_new_location(name);
 
-
-        if(board.flags["turn_stage"]==1)//pressing on source triangle
+        else if (board.flags["turn_stage"] == 1)//pressing on source triangle
             handle_press_after_throw(name);
-        if (transform.Find("Sprite_Triangle"))// need to check if sprite was pressed means that sprite is on
-            handle_press_as_new_location(name);
 
     }
     private void Roll_Dice(int left, int right = 0)
@@ -122,11 +123,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
 
         push_piece(name);
-        if (is_valid_destination(triangle_number))
-        {
-            update_dice(triangle_number - source_triangle);
-            end_move(triangle_number);
-        }
+        update_dice(triangle_number - source_triangle);
+        end_move(triangle_number);
+
     }
 
     #endregion
@@ -215,21 +214,39 @@ public class SC_Triangle_Maneger : MonoBehaviour
         {
             dest_triangles[0] = -1;
             triangle_number = dest_triangles[1];
+            //get_triangle_script("Triangle"+dest_triangles[1]).change_sprite_stat();//turning off the other triangle
+            
         }
         else if (dest_triangles[1] == triangle_number)
         {
             dest_triangles[1] = -1;
             triangle_number = dest_triangles[0];
+            //get_triangle_script("Triangle" + dest_triangles[0]).change_sprite_stat();//turning off the other triangle
+
         }
+        turn_off_dest_triangles();
         //Triangles["Triangle" + triangle_number].GetComponent<SC_Triangle>().change_sprite_stat();
     }
 
+    void turn_off_dest_triangles()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            if (dest_triangles[i] != -1)
+            {
+                SC_Triangle curr = get_triangle_script("Triangle" + dest_triangles[i]);
+                if (curr.is_sprite_active())
+                    curr.change_sprite_stat();
+            }
+        }
+    }
     private void init_vars()
     {
         source_triangle = -1;
         turn_moves = 0;
         curr_dice[0] = 0;
         curr_dice[1] = 0;
+        turn_off_dest_triangles();
         dest_triangles[0] = -1;
         dest_triangles[1] = -1;
     }

@@ -59,4 +59,11 @@ public class SC_Triangle : MonoBehaviour
     {
         Triangle_Stack.push_piece(piece,color);
     }
+
+    public bool is_sprite_active()
+    {
+        if (Sprite_Triangle.activeSelf)
+            return true;
+        return false;
+    }
 }

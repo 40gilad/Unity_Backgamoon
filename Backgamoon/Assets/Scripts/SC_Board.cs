@@ -63,10 +63,6 @@ public class SC_Board : MonoBehaviour
     private void Roll_Dice(int left, int right = 0)
     {
         flags["turn_stage"] = 1;
-        /*
-        curr_dice[0] = left;
-        curr_dice[1] = right;
-        */
         curr_dice[0] = left;
         curr_dice[1] = right;
         if (curr_dice[0] == curr_dice[1])

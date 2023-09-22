@@ -67,11 +67,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
     }
     void pressed_triangle(string name)
     {
+        turn_off_dest_triangles();
         Debug.Log("TManeger pressed_triangle " + name);
         Debug.Log("flags= " + board.flags["turn_stage"]);
         Debug.Log("TManeger turn " + turn);
-        if (get_triangle_script(name).is_sprite_active())// need to check if sprite was pressed means that sprite is on
-             handle_press_as_new_location(name);
+        //    if (get_triangle_script(name).is_sprite_active())
+        //       handle_press_as_new_location(name);
+        if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
+            handle_press_as_new_location(name);
 
         else if (board.flags["turn_stage"] == 1)//pressing on source triangle
             handle_press_after_throw(name);
@@ -99,7 +102,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
             dest_triangles[0] = source_triangle + (curr_dice[0] * direction_accelerator);
             dest_triangles[1] = source_triangle + (curr_dice[1] * direction_accelerator);
             //take piece from triangle
-            get_triangle_script(name).pop_piece();
+            //get_triangle_script(name).pop_piece();
 
             //turn on relevant triangle (pressed,pressed+dice1, pressed+dice2
             if (board.flags["double"] == 1)
@@ -128,10 +131,11 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
         if (sc_triangle.is_vunarable(turn))
         {
+            //IMPLEMENT CAPTURE LOGIC
             sc_triangle.pop_piece();
             Debug.Log("<color=red>write capture logic</color>");
         }
-
+        get_triangle_script("Triangle"+source_triangle).pop_piece();
         push_piece(name);
         update_dice(triangle_number - source_triangle);
         end_move(triangle_number);
@@ -209,7 +213,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
             sc_triangle.push_piece(Instantiate(orange_piece), 'O');
         else if (!turn)
             sc_triangle.push_piece(Instantiate(green_piece), 'G');
-        sc_triangle.change_sprite_stat();
     }
 
     void end_move(int triangle_number)
@@ -235,7 +238,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
             //get_triangle_script("Triangle" + dest_triangles[0]).change_sprite_stat();//turning off the other triangle
 
         }
-        turn_off_dest_triangles();
         //Triangles["Triangle" + triangle_number].GetComponent<SC_Triangle>().change_sprite_stat();
     }
 

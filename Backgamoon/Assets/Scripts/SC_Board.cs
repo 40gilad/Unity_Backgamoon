@@ -38,7 +38,6 @@ public class SC_Board : MonoBehaviour
     #region MonoBehaviour
     void Awake()
     {
-        Debug.Log("Awake " + name);
         DiceRoller = new GameObject[2];
         DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
         DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");

@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.Apple;
 
 public class SC_Triangle_Maneger : MonoBehaviour
 {
     public delegate void Finish_Move_Handler();
     public static Finish_Move_Handler finish_turn;
     Dictionary<string, GameObject> Triangles;
-    private static int TRIANGLES_AMOUNT = 24;
+    private static int TRIANGLES_AMOUNT = 24; //triangle 200- green captured, triangle 100- orange captured
+    
     bool turn;
     int turn_moves;
     int direction_accelerator = 0;
@@ -68,26 +70,19 @@ public class SC_Triangle_Maneger : MonoBehaviour
     void pressed_triangle(string name)
     {
         turn_off_dest_triangles();
-        Debug.Log("TManeger pressed_triangle " + name);
-        Debug.Log("flags= " + board.flags["turn_stage"]);
-        Debug.Log("TManeger turn " + turn);
-        //    if (get_triangle_script(name).is_sprite_active())
-        //       handle_press_as_new_location(name);
         if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
             handle_press_as_new_location(name);
 
         else if (board.flags["turn_stage"] == 1)//pressing on source triangle
             handle_press_after_throw(name);
-
     }
     private void Roll_Dice(int left, int right = 0)
     {
-        /*
         curr_dice[0] = left;
         curr_dice[1] = right;
-        */
-        curr_dice[0] = left;
-        curr_dice[1] = right;
+        if (board.flags["captures"] > 0)
+            Debug.Log("Implement captures logic");
+            //dice rolled and there is captures
 
     }
     #endregion
@@ -97,12 +92,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         if (is_valid_press(name))
         {
-            Debug.Log("is_valid_press dire_acc= " + direction_accelerator);
             source_triangle = get_triangle_number(name);
             dest_triangles[0] = source_triangle + (curr_dice[0] * direction_accelerator);
             dest_triangles[1] = source_triangle + (curr_dice[1] * direction_accelerator);
-            //take piece from triangle
-            //get_triangle_script(name).pop_piece();
 
             //turn on relevant triangle (pressed,pressed+dice1, pressed+dice2
             if (board.flags["double"] == 1)
@@ -117,26 +109,20 @@ public class SC_Triangle_Maneger : MonoBehaviour
                 if (curr_dice[1] != 0 && is_valid_destination(dest_triangles[1]))
                     get_triangle_script("Triangle" + (dest_triangles[1])).change_sprite_stat();
             }
-            //raise flag in SC_Board?
         }
     }
 
     private void handle_press_as_new_location(string name)
     {
-        Debug.Log("handle_press_as_move " + name);
-
         int triangle_number = get_triangle_number(name);
         turn_moves++;
         SC_Triangle sc_triangle = get_triangle_script(name);
 
-        if (sc_triangle.is_vunarable(turn))
-        {
-            //IMPLEMENT CAPTURE LOGIC
-            sc_triangle.pop_piece();
-            Debug.Log("<color=red>write capture logic</color>");
-        }
         get_triangle_script("Triangle"+source_triangle).pop_piece();
-        push_piece(name);
+        if (sc_triangle.is_vunarable(turn))
+            captured(name);
+        else
+            push_piece(name);
         update_dice(triangle_number - source_triangle);
         end_move(triangle_number);
 
@@ -149,7 +135,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         // check if the triangle was pressed to move a piece matches the turn (if orange pieces triangle when turn=True)
         char pressed_pieces_color = get_triangle_script(name).get_stack_color();
-        Debug.Log("is_valid_press with color " + pressed_pieces_color);
         if (((pressed_pieces_color == 'O') && turn) || (pressed_pieces_color == 'G') && !turn)
             return true;
         return false;
@@ -174,6 +159,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
             Triangles.Add(currname, GameObject.Find(currname));
             get_triangle_script(currname).change_sprite_stat();
         }
+        for (int i = 100; i < 201; i+=100)//Captured "triangles"
+        {
+            currname = "Triangle" + i;
+            Triangles.Add(currname, GameObject.Find(currname));
+            get_triangle_script(currname).change_sprite_stat();
+        }
+
+
     }
 
     SC_TrianglePiecesStack get_stack_script(string name)
@@ -228,17 +221,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
         {
             dest_triangles[0] = -1;
             triangle_number = dest_triangles[1];
-            //get_triangle_script("Triangle"+dest_triangles[1]).change_sprite_stat();//turning off the other triangle
             
         }
         else if (dest_triangles[1] == triangle_number)
         {
             dest_triangles[1] = -1;
             triangle_number = dest_triangles[0];
-            //get_triangle_script("Triangle" + dest_triangles[0]).change_sprite_stat();//turning off the other triangle
 
         }
-        //Triangles["Triangle" + triangle_number].GetComponent<SC_Triangle>().change_sprite_stat();
     }
 
     void turn_off_dest_triangles()
@@ -262,6 +252,19 @@ public class SC_Triangle_Maneger : MonoBehaviour
         turn_off_dest_triangles();
         dest_triangles[0] = -1;
         dest_triangles[1] = -1;
+    }
+
+    private void captured(string name)
+    {
+        turn = !turn;
+        SC_Triangle sc_triangle = get_triangle_script(name);
+        sc_triangle.pop_piece();
+        if (turn)
+            push_piece("Triangle200");
+        else if (!turn)
+            push_piece("Triangle100");
+        turn = !turn;
+
     }
     #endregion
 }

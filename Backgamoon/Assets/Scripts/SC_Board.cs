@@ -9,19 +9,31 @@ public class SC_Board : MonoBehaviour
     public static Turn_Handler Turn;
     public Dictionary<string, int> flags;
 
-    /************************************************************************************************/
-    /*
-     * flags["turn_stage"]: 
-     * 0- waiting for throw
-     * 1- threw
-     * 2- possible moves shown on board
-     */
-
     GameObject camera;
     GameObject[] DiceRoller=null;
     int[] curr_dice;
     bool turn; // true= orange turn false= green turn
     public bool multiplayer = true;
+
+    #region README
+    /************************************************************************************************/
+    /*
+     * flags["turn_stage"]: 
+     *  0- waiting for throw
+     *  1- threw
+     *  2- possible moves shown on board
+     * 
+     * flags["double"]:
+     *  0- no double
+     *  1- double thrwoed
+     *  
+     * flags["captures"]
+     *  0- no captures
+     *  1- orange captures
+     *  2- green captures
+     */
+
+    #endregion
 
     #region MonoBehaviour
     void Awake()
@@ -83,6 +95,8 @@ public class SC_Board : MonoBehaviour
     {
         flags.Add("turn_stage", 0);
         flags.Add("double", 0);
+        flags.Add("captures", 0);
+
     }
 
     private void zero_flags()

@@ -12,7 +12,6 @@ public class SC_Triangle : MonoBehaviour
     SC_TrianglePiecesStack Triangle_Stack;
     void Awake()
     {
-        Debug.Log("Awake" + name);
         Triangle_Stack= transform.Find("TrianglePiecesStack").GetComponent<SC_TrianglePiecesStack>();
     }
 
@@ -23,7 +22,6 @@ public class SC_Triangle : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("<color=green> Triangle onmousedown</color>");
         pressed_triangle(name);
     }
 

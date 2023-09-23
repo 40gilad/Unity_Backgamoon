@@ -69,6 +69,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
     }
     void pressed_triangle(string name)
     {
+        if ((turn && board.flags["captures"] == 1) || (!turn && board.flags["captures"] == 2))
+            Debug.Log("breakpoint");
         turn_off_dest_triangles();
         if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
             handle_press_as_new_location(name);
@@ -80,9 +82,11 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         curr_dice[0] = left;
         curr_dice[1] = right;
+        /*
         if (board.flags["captures"] > 0)
             Debug.Log("Implement captures logic");
             //dice rolled and there is captures
+        */
 
     }
     #endregion
@@ -90,9 +94,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
     #region Mouse Click Handlers
     private void handle_press_after_throw(string name)
     {
+        source_triangle = get_triangle_number(name);
+        Debug.Log("<color=blue> handle_press_after_throw triangle "+name+"</color>");
         if (is_valid_press(name))
         {
-            source_triangle = get_triangle_number(name);
+            if (source_triangle == 100 || source_triangle == 200)
+                Debug.Log("<color=cayan> valid press on captured</color>");
             dest_triangles[0] = source_triangle + (curr_dice[0] * direction_accelerator);
             dest_triangles[1] = source_triangle + (curr_dice[1] * direction_accelerator);
 
@@ -121,9 +128,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
         get_triangle_script("Triangle"+source_triangle).pop_piece();
         if (sc_triangle.is_vunarable(turn))
             captured(name);
-        else
-            push_piece(name);
-        update_dice(triangle_number - source_triangle);
+        
+        push_piece(name);
+        if(turn)
+            update_dice(triangle_number - source_triangle);
+        else if(!turn)
+            update_dice(source_triangle- triangle_number);
         end_move(triangle_number);
 
     }
@@ -210,7 +220,13 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     void end_move(int triangle_number)
     {
-        if (turn_moves == 2 && board.flags["double"] == 0)
+        if (board.flags["double"] == 1 && turn_moves == 4)
+        {
+            init_vars();
+            finish_turn();
+            return;
+        }
+        else if (turn_moves == 2 && board.flags["double"] == 0)
         {
             init_vars();
             finish_turn();
@@ -221,13 +237,11 @@ public class SC_Triangle_Maneger : MonoBehaviour
         {
             dest_triangles[0] = -1;
             triangle_number = dest_triangles[1];
-            
         }
         else if (dest_triangles[1] == triangle_number)
         {
             dest_triangles[1] = -1;
             triangle_number = dest_triangles[0];
-
         }
     }
 
@@ -260,10 +274,21 @@ public class SC_Triangle_Maneger : MonoBehaviour
         SC_Triangle sc_triangle = get_triangle_script(name);
         sc_triangle.pop_piece();
         if (turn)
-            push_piece("Triangle200");
-        else if (!turn)
+        {
             push_piece("Triangle100");
+            board.flags["captures"] = 1;
+        }
+        else if (!turn)
+        {
+            push_piece("Triangle200");
+            board.flags["captures"] = 2;
+        }
         turn = !turn;
+
+    }
+
+    private void captured_turn()
+    {
 
     }
     #endregion

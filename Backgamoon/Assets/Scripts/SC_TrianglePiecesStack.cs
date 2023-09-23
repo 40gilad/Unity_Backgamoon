@@ -56,7 +56,6 @@ public class SC_TrianglePiecesStack : MonoBehaviour
 
     public void push_piece(GameObject piece,char color)
     {
-        Debug.Log("Push piece on " + pieces_distance +"*"+ (top)+"="+ pieces_distance* (top));
         piece.transform.parent = transform;
         piece.GetComponent<Transform>().localPosition = new Vector3 (0,pieces_distance*(top),0);
         piece.GetComponent<Transform>().localScale = new Vector3(1, 1, 1);

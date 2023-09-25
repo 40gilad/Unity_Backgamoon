@@ -569,7 +569,12 @@ PrefabInstance:
     - target: {fileID: 5548578760544487811, guid: 0a8b81bca2a58cb498420203f956ccab,
         type: 3}
       propertyPath: m_Name
-      value: Triangle200
+      value: Triangle24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548578760544487811, guid: 0a8b81bca2a58cb498420203f956ccab,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6740036869873198102, guid: 0a8b81bca2a58cb498420203f956ccab,
         type: 3}
@@ -1570,7 +1575,12 @@ PrefabInstance:
     - target: {fileID: 5548578760544487811, guid: 0a8b81bca2a58cb498420203f956ccab,
         type: 3}
       propertyPath: m_Name
-      value: Triangle100
+      value: Triangle-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548578760544487811, guid: 0a8b81bca2a58cb498420203f956ccab,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6740036869873198102, guid: 0a8b81bca2a58cb498420203f956ccab, type: 3}

@@ -17,7 +17,7 @@ public class SC_TrianglePiecesStack : MonoBehaviour
     }
 
     #endregion
-    private void check_my_color()
+    public void check_my_color()
     {
         if (top > 0)
             stack_color = transform.GetChild(0).gameObject.name[0];
@@ -52,6 +52,9 @@ public class SC_TrianglePiecesStack : MonoBehaviour
         else
             return;
         Destroy(transform.Find(piece_2_destroy).gameObject);
+
+        if (top == 0)
+            stack_color = 'N';
     }
 
     public void push_piece(GameObject piece,char color)
@@ -60,9 +63,15 @@ public class SC_TrianglePiecesStack : MonoBehaviour
         piece.GetComponent<Transform>().localPosition = new Vector3 (0,pieces_distance*(top),0);
         piece.GetComponent<Transform>().localScale = new Vector3(1, 1, 1);
         piece.GetComponent<SC_Piece>().change_piece_name(++top,color);
-        check_my_color();
+        StartCoroutine(update_stack_color());
 
         //refer to option when top>8 (tower)
+    }
+
+    private IEnumerator update_stack_color()
+    {
+        yield return null; // wait until the next frame
+        check_my_color();
     }
 
 

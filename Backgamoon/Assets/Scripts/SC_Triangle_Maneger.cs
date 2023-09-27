@@ -11,7 +11,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public delegate void Finish_Move_Handler();
     public static Finish_Move_Handler finish_turn;
     Dictionary<string, GameObject> Triangles;
-    private static int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
+    private const int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
+    private const int LAST_TRIANGLE = 23;
 
     bool turn;
     int turn_moves;
@@ -92,7 +93,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
         Debug.Log("Roll_Dice " + left + ", " + right);
         curr_dice[0] = left;
         curr_dice[1] = right;
-        check_captures_after_throw();
+        if (!check_available_moves())
+            board.ChangeTurn();
     }
     #endregion
 
@@ -161,6 +163,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private bool is_valid_destination(int dest)
     {
+        if (dest > 23 || dest < 0)
+            return false;
         Debug.Log("is_valid_destination " + dest);
         SC_Triangle Tdest = get_triangle_script("Triangle" + dest);
         char dest_color = Tdest.get_stack_color();
@@ -180,12 +184,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
             Triangles.Add(currname, GameObject.Find(currname));
             get_triangle_script(currname).change_sprite_stat();
         }
-    }
-
-    SC_TrianglePiecesStack get_stack_script(string name)
-    {
-        Debug.Log("get_stack_script " + name);
-        return Triangles[name].transform.Find("TrianglePiecesStack").gameObject.GetComponent<SC_TrianglePiecesStack>();
     }
 
     SC_Triangle get_triangle_script(string name)
@@ -242,14 +240,16 @@ public class SC_Triangle_Maneger : MonoBehaviour
             return;
         }
         board.flags["turn_stage"] = 1;
-        if (dest_triangles[0] == triangle_number)
+        if (board.flags["double"] == 1)
+            dest_triangles[0] = dest_triangles[1] = -2;
+        else if (dest_triangles[0] == triangle_number)
         {
-            dest_triangles[0] = -1;
+            dest_triangles[0] = -2;
             triangle_number = dest_triangles[1];
         }
         else if (dest_triangles[1] == triangle_number)
         {
-            dest_triangles[1] = -1;
+            dest_triangles[1] = -2;
             triangle_number = dest_triangles[0];
         }
     }
@@ -299,22 +299,80 @@ public class SC_Triangle_Maneger : MonoBehaviour
         turn = !turn;
     }
 
-    private void check_captures_after_throw()
+    private bool check_available_moves()
     {
-        Debug.Log("check_captures_after_throw");
-        if (turn && board.flags["captures"] == 1)//orange turn and it has captured pieces
+        int[] green_stacks = new int[24];
+        int[] orange_stacks = new int[24];
+        green_stacks = get_stacks('G');
+        orange_stacks = get_stacks('O');
+        if (turn)//check available moves for orange
         {
+            if (board.flags["captures"] == 1)//check available moves for orange captured stack
+            {
+                if ((curr_dice[0] != 0 && is_valid_destination(curr_dice[0] - 1))
+                    || (curr_dice[1] != 0 && is_valid_destination(curr_dice[1] - 1)))
+                    return true;
+                else
+                    return false;
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                if (orange_stacks[i] != -2)
+                {
+                    source_triangle = orange_stacks[i];
+                    if ((curr_dice[0] != 0 && is_valid_destination(i + curr_dice[0])) ||
+                        curr_dice[1] != 0 && is_valid_destination(i + curr_dice[1]))
+                        return true;
+                }   
+            }
+            return false;
 
         }
-        else if (!turn && board.flags["captures"] == 2)//green turn and it has captured pieces
+        else if (!turn)//check available moves for green
         {
-
+            if (board.flags["captures"] == 2)//check available moves for green captured stack
+            {
+                if ((curr_dice[0] != 0 && is_valid_destination(LAST_TRIANGLE - (curr_dice[0] - 1)))
+                    || (curr_dice[1] != 0 && is_valid_destination(LAST_TRIANGLE - (curr_dice[1] - 1))))
+                    return true;
+                else
+                    return false;
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                if (green_stacks[i] != -2)
+                {
+                    source_triangle = green_stacks[i];
+                    if ((curr_dice[0] != 0 && is_valid_destination(i - curr_dice[0])) ||
+                        curr_dice[1] != 0 && is_valid_destination(i - curr_dice[1]))
+                        return true;
+                }
+            }
+            return false;
         }
+        return false;
     }
 
     private void captured_turn()
     {
         Debug.Log("captured_turn");
+    }
+
+    private int[] get_stacks(char color)
+    {
+        int[] res = new int[24];
+        for (int i = 0; i < 24; i++)
+        {
+            SC_Triangle curr_triangle = get_triangle_script("Triangle" + i);
+            char curr_color = curr_triangle.get_stack_color();
+            int curr_amount = curr_triangle.top();
+            if (curr_color == color && curr_amount >= 1)
+                res[i] = i;
+            else
+                res[i] = -2;
+        }
+        return res;
+
     }
     #endregion
 }

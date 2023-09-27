@@ -64,4 +64,10 @@ public class SC_Triangle : MonoBehaviour
             return true;
         return false;
     }
+
+    public int top()
+    {
+        return Triangle_Stack.top;
+    }
+
 }

@@ -27,10 +27,9 @@ public class SC_Board : MonoBehaviour
      *  0- no double
      *  1- double thrwoed
      *  
-     * flags["captures"]
+     * flags[color+ "captures"]:
      *  0- no captures
-     *  1- orange captures
-     *  2- green captures
+     *  1- captures
      */
 
     #endregion
@@ -94,7 +93,8 @@ public class SC_Board : MonoBehaviour
     {
         flags.Add("turn_stage", 0);
         flags.Add("double", 0);
-        flags.Add("captures", 0);
+        flags.Add("Gcaptures", 0);
+        flags.Add("Ocaptures", 0);
 
     }
 

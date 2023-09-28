@@ -13,6 +13,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
     Dictionary<string, GameObject> Triangles;
     private const int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
     private const int LAST_TRIANGLE = 23;
+    private const int ORANGE_CAPTURED_STACK = -1;
+    private const int GREEN_CAPTURED_STACK = 24;
+
 
     bool turn;
     int turn_moves;
@@ -74,12 +77,13 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     void pressed_triangle(string name)
     {
-        if (get_triangle_number(name) == source_triangle)//repressed, cancele the press
-        {
 
+        if (get_triangle_number(name) == source_triangle)
+        {
+            Debug.Log("<color=red>repressed, cancele the press</color>");
         }
-        Debug.Log("pressed_triangle " + name);
-        if ((turn && board.flags["captures"] == 1) || (!turn && board.flags["captures"] == 2))
+        Debug.Log("<color=orange>84. pressed_triangle " + name+"</color>");
+        if ((turn && board.flags["Ocaptures"] == 1) || (!turn && board.flags["Gcaptures"] == 1))
             Debug.Log("breakpoint");
         turn_off_dest_triangles();
         if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
@@ -94,7 +98,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         curr_dice[0] = left;
         curr_dice[1] = right;
         if (!check_available_moves())
-            board.ChangeTurn();
+            no_available_moves();
     }
     #endregion
 
@@ -102,14 +106,10 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private void handle_press_after_throw(string name)
     {
         Debug.Log("handle_press_after_throw " + name);
-        if (name == "Triangle-1")
-            Debug.Log("breakpoing- line 95");
         source_triangle = get_triangle_number(name);
         Debug.Log("<color=blue> handle_press_after_throw triangle " + name + "</color>");
         if (is_valid_press(name))
         {
-            if (source_triangle == 100 || source_triangle == 200)
-                Debug.Log("<color=cayan> check is valid press on captured</color>");
             dest_triangles[0] = source_triangle + (curr_dice[0] * direction_accelerator);
             dest_triangles[1] = source_triangle + (curr_dice[1] * direction_accelerator);
 
@@ -147,6 +147,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
                 update_dice(source_triangle - triangle_number);
         }
         end_move(triangle_number);
+        StartCoroutine(CR_check_available_moves());
+
     }
     #endregion
 
@@ -154,9 +156,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private bool is_valid_press(string name)
     {
         Debug.Log("is_valid_press " + name);
+        SC_Triangle Tcurr = get_triangle_script(name);
         // check if the triangle was pressed to move a piece matches the turn (if orange pieces triangle when turn=True)
-        char pressed_pieces_color = get_triangle_script(name).get_stack_color();
-        if (((pressed_pieces_color == 'O') && turn) || (pressed_pieces_color == 'G') && !turn)
+        // also check if current player has captured pieces. if so, he has to press on his captured stack
+        char pressed_pieces_color = Tcurr.get_stack_color();
+        if (((pressed_pieces_color == 'O') && turn && (board.flags["Ocaptures"]!=1 ||    name=="Triangle-1")
+            || (pressed_pieces_color == 'G') && !turn && (board.flags["Gcaptures"] != 1 || name == "Triangle24")))
             return true;
         return false;
     }
@@ -194,15 +199,11 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     int get_triangle_number(string name)
     {
-        Debug.Log("get_triangle_number " + name);
-        int index = -1;
-        foreach (var key in Triangles.Keys)
-        {
-            if (key == name)
-                return index;
-            index++;
-        }
-        return -1;
+        string number = name.Substring("Triangle".Length);
+        int num = int.Parse(number);
+            if (num >= -1 && num <= 24)
+                return num;
+        return -2;
     }
 
     void update_dice(int n)
@@ -226,8 +227,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     void end_move(int triangle_number)
     {
+        StartCoroutine(CR_wait_seconds(-1));
         Debug.Log("end_move " + triangle_number);
-        if (board.flags["double"] == 1 && turn_moves == 4)
+        if (turn_moves == 4 && board.flags["double"] == 1)
         {
             init_vars();
             finish_turn();
@@ -238,6 +240,21 @@ public class SC_Triangle_Maneger : MonoBehaviour
             init_vars();
             finish_turn();
             return;
+        }
+        if(turn_moves>0)//zero capture flag if captured_flag is empty
+        {
+            if (turn && get_triangle_script("Triangle" + ORANGE_CAPTURED_STACK).is_stack_empty())
+            {
+
+                board.flags["Ocaptures"] = 0;
+                Debug.Log("<color=purple>Ocaptures=0</color>");
+            }
+            else if (!turn && get_triangle_script("Triangle" + GREEN_CAPTURED_STACK).is_stack_empty())
+            {
+                board.flags["Gcaptures"] = 0;
+                Debug.Log("<color=purple>Gcaptures=0</color>");
+            }
+
         }
         board.flags["turn_stage"] = 1;
         if (board.flags["double"] == 1)
@@ -252,6 +269,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
             dest_triangles[1] = -2;
             triangle_number = dest_triangles[0];
         }
+
     }
 
     void turn_off_dest_triangles()
@@ -289,26 +307,31 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if (turn)
         {
             push_piece("Triangle-1");
-            board.flags["captures"] = 1;
+            board.flags["Ocaptures"] = 1;
+            Debug.Log("<color=purple>captures=1</color>");
         }
         else if (!turn)
         {
             push_piece("Triangle24");
-            board.flags["captures"] = 2;
+            board.flags["Gcaptures"] = 1;
+            Debug.Log("<color=purple>captures=2</color>");
+
         }
         turn = !turn;
     }
 
     private bool check_available_moves()
     {
+        Debug.Log("<color=purple>check_available_moves()</color>");
         int[] green_stacks = new int[24];
         int[] orange_stacks = new int[24];
         green_stacks = get_stacks('G');
         orange_stacks = get_stacks('O');
         if (turn)//check available moves for orange
         {
-            if (board.flags["captures"] == 1)//check available moves for orange captured stack
+            if (board.flags["Ocaptures"] == 1)//check available moves for orange captured stack
             {
+                source_triangle = ORANGE_CAPTURED_STACK;
                 if ((curr_dice[0] != 0 && is_valid_destination(curr_dice[0] - 1))
                     || (curr_dice[1] != 0 && is_valid_destination(curr_dice[1] - 1)))
                     return true;
@@ -330,8 +353,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
         else if (!turn)//check available moves for green
         {
-            if (board.flags["captures"] == 2)//check available moves for green captured stack
+            if (board.flags["Gcaptures"] == 1)//check available moves for green captured stack
             {
+                source_triangle = GREEN_CAPTURED_STACK;
                 if ((curr_dice[0] != 0 && is_valid_destination(LAST_TRIANGLE - (curr_dice[0] - 1)))
                     || (curr_dice[1] != 0 && is_valid_destination(LAST_TRIANGLE - (curr_dice[1] - 1))))
                     return true;
@@ -373,6 +397,26 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
         return res;
 
+    }
+
+    private void no_available_moves()
+    {
+        Debug.Log("<color=yellow>Implement no available moves graphic</color>");
+        board.ChangeTurn();
+    }
+    private IEnumerator CR_check_available_moves()
+    {
+        yield return null; // wait until the next frame
+        if (turn_moves>=1 && !check_available_moves())
+            no_available_moves();
+    }
+
+    public IEnumerator CR_wait_seconds(int sec)
+    {
+        if (sec == -1)
+            yield return null;
+        else
+            yield return new WaitForSeconds(sec);
     }
     #endregion
 }

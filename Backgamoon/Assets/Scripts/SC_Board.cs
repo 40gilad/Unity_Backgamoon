@@ -9,6 +9,7 @@ public class SC_Board : MonoBehaviour
     public static Turn_Handler Turn;
     public Dictionary<string, int> flags;
 
+    GameObject Sprite_x;
     GameObject camera;
     GameObject[] DiceRoller=null;
     int[] curr_dice;
@@ -44,6 +45,7 @@ public class SC_Board : MonoBehaviour
             camera = GameObject.Find("Main Camera");
         flags= new Dictionary<string, int>();
         curr_dice = new int[2];
+        Sprite_x = GameObject.Find("Sprite_X");
     }
 
     void Start()
@@ -58,6 +60,7 @@ public class SC_Board : MonoBehaviour
     {
         SC_DiceManeger.Roll_Dice += Roll_Dice;
         SC_Triangle_Maneger.finish_turn += Finish_Turn;
+        SC_Triangle_Maneger.no_available_moves += No_Moves;
 
     }
 
@@ -65,6 +68,8 @@ public class SC_Board : MonoBehaviour
     {
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
         SC_Triangle_Maneger.finish_turn -= Finish_Turn;
+        SC_Triangle_Maneger.no_available_moves -= No_Moves;
+
     }
 
     #endregion
@@ -110,6 +115,19 @@ public class SC_Board : MonoBehaviour
         curr_dice[1] = 0;
     }
 
+    private void No_Moves()
+    {
+        StartCoroutine(CR_No_Moves());
+    }
+
+    private IEnumerator CR_No_Moves()
+    {
+        yield return new WaitForSeconds(1);
+        Sprite_x.SetActive(true);
+        yield return new WaitForSeconds(2);
+        Sprite_x.SetActive(false);
+        ChangeTurn();
+    }
     public void ChangeTurn()
     {
         turn = !turn;
@@ -120,6 +138,9 @@ public class SC_Board : MonoBehaviour
 
         DiceRoller[0].SetActive(!turn);
         DiceRoller[1].SetActive(turn);
+
+        if(Sprite_x.activeSelf)
+            Sprite_x.SetActive(false);
         Turn(turn);
     }
 
@@ -143,7 +164,6 @@ public class SC_Board : MonoBehaviour
     {
         Debug.Log("<color=red>Write is game finished logic</color>");
     }
-
     #endregion
 
 }

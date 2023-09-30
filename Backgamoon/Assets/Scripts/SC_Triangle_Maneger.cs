@@ -10,6 +10,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
 {
     public delegate void Finish_Move_Handler();
     public static Finish_Move_Handler finish_turn;
+    public delegate void No_Moves_Handler();
+    public static No_Moves_Handler no_available_moves;
     Dictionary<string, GameObject> Triangles;
     private const int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
     private const int LAST_TRIANGLE = 23;
@@ -227,7 +229,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     void end_move(int triangle_number)
     {
-        StartCoroutine(CR_wait_seconds(-1));
+        StartCoroutine(CR_wait_frame());
         Debug.Log("end_move " + triangle_number);
         if (turn_moves == 4 && board.flags["double"] == 1)
         {
@@ -399,11 +401,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     }
 
-    private void no_available_moves()
-    {
-        Debug.Log("<color=yellow>Implement no available moves graphic</color>");
-        board.ChangeTurn();
-    }
     private IEnumerator CR_check_available_moves()
     {
         yield return null; // wait until the next frame
@@ -411,12 +408,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
             no_available_moves();
     }
 
-    public IEnumerator CR_wait_seconds(int sec)
+    public IEnumerator CR_wait_frame()
     {
-        if (sec == -1)
             yield return null;
-        else
-            yield return new WaitForSeconds(sec);
     }
     #endregion
 }

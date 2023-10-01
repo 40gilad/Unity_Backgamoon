@@ -31,6 +31,10 @@ public class SC_Board : MonoBehaviour
      * flags[color+ "captures"]:
      *  0- no captures
      *  1- captures
+     *  
+     *  flags[color+"endgame"]
+     *  0- no endgame
+     *  1- endgame
      */
 
     #endregion
@@ -61,7 +65,7 @@ public class SC_Board : MonoBehaviour
         SC_DiceManeger.Roll_Dice += Roll_Dice;
         SC_Triangle_Maneger.finish_turn += Finish_Turn;
         SC_Triangle_Maneger.no_available_moves += No_Moves;
-
+        SC_Triangle_Maneger.game_finished += finish_game;
     }
 
     private void OnDisable()
@@ -69,6 +73,8 @@ public class SC_Board : MonoBehaviour
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
         SC_Triangle_Maneger.finish_turn -= Finish_Turn;
         SC_Triangle_Maneger.no_available_moves -= No_Moves;
+        SC_Triangle_Maneger.game_finished -= finish_game;
+
 
     }
 
@@ -91,6 +97,13 @@ public class SC_Board : MonoBehaviour
         ChangeTurn();
     }
 
+    private void finish_game(char color)
+    {
+        if (color == 'O')
+            Debug.Log("<color=orange>ORANGE WON!!</color>");
+        if(color=='G')
+            Debug.Log("<color=green>GREEN WON!!</color>");
+    }
     #endregion
 
     #region Support Functions
@@ -100,7 +113,8 @@ public class SC_Board : MonoBehaviour
         flags.Add("double", 0);
         flags.Add("Gcaptures", 0);
         flags.Add("Ocaptures", 0);
-
+        flags.Add("Gendgame", 0);
+        flags.Add("Oendgame", 0);
     }
 
     private void zero_flags()

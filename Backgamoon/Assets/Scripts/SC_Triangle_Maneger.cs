@@ -12,9 +12,16 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public static Finish_Move_Handler finish_turn;
     public delegate void No_Moves_Handler();
     public static No_Moves_Handler no_available_moves;
+    public delegate void Game_Finished_Handler(char color);
+    public static Game_Finished_Handler game_finished;
     Dictionary<string, GameObject> Triangles;
+
+    /******************* CONSTANTS ***********************/
     private const int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
     private const int LAST_TRIANGLE = 23;
+    private const int FIRST_TRIANGLE = 0;
+    private const int FIRST_G_TRIANGLE = 5;
+    private const int FIRST_O_TRIANGLE = 18;
     private const int ORANGE_CAPTURED_STACK = -1;
     private const int GREEN_CAPTURED_STACK = 24;
 
@@ -85,8 +92,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
             Debug.Log("<color=red>repressed, cancele the press</color>");
         }
         Debug.Log("<color=orange>84. pressed_triangle " + name+"</color>");
-        if ((turn && board.flags["Ocaptures"] == 1) || (!turn && board.flags["Gcaptures"] == 1))
-            Debug.Log("breakpoint");
         turn_off_dest_triangles();
         if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
             handle_press_as_new_location(name);
@@ -107,26 +112,48 @@ public class SC_Triangle_Maneger : MonoBehaviour
     #region Mouse Click Handlers
     private void handle_press_after_throw(string name)
     {
-        Debug.Log("handle_press_after_throw " + name);
-        source_triangle = get_triangle_number(name);
         Debug.Log("<color=blue> handle_press_after_throw triangle " + name + "</color>");
+        source_triangle = get_triangle_number(name);
         if (is_valid_press(name))
         {
             dest_triangles[0] = source_triangle + (curr_dice[0] * direction_accelerator);
             dest_triangles[1] = source_triangle + (curr_dice[1] * direction_accelerator);
-
-            //turn on relevant triangle (pressed,pressed+dice1, pressed+dice2
             if (board.flags["double"] == 1)
             {
                 if (curr_dice[0] != 0 && is_valid_destination(dest_triangles[0]))
                     get_triangle_script("Triangle" + (dest_triangles[0])).change_sprite_stat();
+
             }
             else
-            {
+            {   // activate sprite for destination triangles
                 if (curr_dice[0] != 0 && is_valid_destination(dest_triangles[0]))
                     get_triangle_script("Triangle" + (dest_triangles[0])).change_sprite_stat();
                 if (curr_dice[1] != 0 && is_valid_destination(dest_triangles[1]))
                     get_triangle_script("Triangle" + (dest_triangles[1])).change_sprite_stat();
+            }
+            if (turn && board.flags["Oendgame"] == 1)
+            {
+                if (board.flags["double"] != 1)
+                {
+                    if (dest_triangles[0] > LAST_TRIANGLE)
+                        handle_press_as_new_location("Triangle" + dest_triangles[0]);
+                    if (dest_triangles[1] > LAST_TRIANGLE)
+                        handle_press_as_new_location("Triangle" + dest_triangles[1]);
+                }
+                else
+                    handle_press_as_new_location("Triangle" + dest_triangles[0]);
+            }
+            else if (!turn && board.flags["Gendgame"] == 1)
+            {
+                if (board.flags["double"] != 1)
+                {
+                    if (dest_triangles[0] < FIRST_TRIANGLE)
+                        handle_press_as_new_location("Triangle" + dest_triangles[0]);
+                    if (dest_triangles[1] < FIRST_TRIANGLE)
+                        handle_press_as_new_location("Triangle" + dest_triangles[1]);
+                }
+                else
+                    handle_press_as_new_location("Triangle" + dest_triangles[0]);
             }
         }
     }
@@ -136,11 +163,25 @@ public class SC_Triangle_Maneger : MonoBehaviour
         Debug.Log("handle_press_as_new_location " + name);
         int triangle_number = get_triangle_number(name);
         turn_moves++;
-        SC_Triangle sc_triangle = get_triangle_script(name);
-        get_triangle_script("Triangle" + source_triangle).pop_piece();
-        if (sc_triangle.is_vunarable(turn))
-            captured(name);
-        push_piece(name);
+        if (triangle_number >= FIRST_TRIANGLE && triangle_number <= LAST_TRIANGLE) //triangle number is in game scope
+        {
+            SC_Triangle sc_triangle = get_triangle_script(name);
+            get_triangle_script("Triangle" + source_triangle).pop_piece();
+            if (sc_triangle.is_vunarable(turn))
+                captured(name);
+            push_piece(name);
+        }
+        else //triangle number is outside scope, means endgame
+        {
+            if(turn && board.flags["Oendgame"]==1)
+            {
+                get_triangle_script("Triangle"+source_triangle).pop_piece();
+            }
+            else if (!turn && board.flags["Gendgame"] == 1)
+            {
+                get_triangle_script("Triangle" + source_triangle).pop_piece();
+            }
+        }
         if (board.flags["double"] != 1)
         {
             if (turn)
@@ -170,7 +211,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private bool is_valid_destination(int dest)
     {
-        if (dest > 23 || dest < 0)
+        if (dest > LAST_TRIANGLE || dest < FIRST_TRIANGLE)
             return false;
         Debug.Log("is_valid_destination " + dest);
         SC_Triangle Tdest = get_triangle_script("Triangle" + dest);
@@ -271,7 +312,45 @@ public class SC_Triangle_Maneger : MonoBehaviour
             dest_triangles[1] = -2;
             triangle_number = dest_triangles[0];
         }
+        is_endgame();
+        is_finish();
+    }
 
+    private void is_endgame()
+    {
+        Debug.Log("is_endgame");
+        if (turn) {
+            int[] Ostacks = new int[24];
+            Ostacks=get_stacks('O');
+            if (board.flags["Ocaptures"] == 1)
+            {
+                board.flags["Oendgame"] = 0;
+                return;
+            }
+            for(int i = FIRST_TRIANGLE; i < FIRST_O_TRIANGLE; i++)//check all triangles exept orange home triangles
+            {
+                if (Ostacks[i] != -2)
+                    return;
+            }
+            board.flags["Oendgame"] = 1;
+        }
+
+        else if (!turn)
+        {
+            int[] Gstacks = new int[24];
+            Gstacks = get_stacks('G');
+            if (board.flags["Gcaptures"] == 1)
+            {
+                board.flags["Gendgame"] = 0;
+                return;
+            }
+            for (int i = LAST_TRIANGLE; i > FIRST_G_TRIANGLE; i--)//check all triangles exept orange home triangles
+            {
+                if (Gstacks[i] != -2)
+                    return;
+            }
+            board.flags["Gendgame"] = 1;
+        }
     }
 
     void turn_off_dest_triangles()
@@ -279,7 +358,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         Debug.Log("turn_off_dest_triangles");
         for (int i = 0; i < 2; i++)
         {
-            if (dest_triangles[i] != -2)
+            if (dest_triangles[i] != -2 && is_valid_destination(dest_triangles[i]))
             {
                 SC_Triangle curr = get_triangle_script("Triangle" + dest_triangles[i]);
                 if (curr.is_sprite_active())
@@ -288,6 +367,37 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
     }
 
+    private void is_finish()
+    {
+        Debug.Log("is_finish");
+        if (turn)
+        {
+            int[] Ostacks = new int[24];
+            Ostacks = get_stacks('O');
+            if (board.flags["Ocaptures"] == 1)
+                return;
+            for (int i = FIRST_TRIANGLE; i <= LAST_TRIANGLE; i++)
+            {
+                if (Ostacks[i] != -2)
+                    return;
+            }
+            game_finished('O');
+        }
+
+        else if (!turn)
+        {
+            int[] Gstacks = new int[24];
+            Gstacks = get_stacks('G');
+            if (board.flags["Gcaptures"] == 1)
+                return;
+            for (int i = FIRST_TRIANGLE; i <= LAST_TRIANGLE; i++)
+            {
+                if (Gstacks[i] != -2)
+                    return;
+            }
+            game_finished('G');
+        }
+    }
     private void init_vars()
     {
         Debug.Log("init_vars");
@@ -310,12 +420,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
         {
             push_piece("Triangle-1");
             board.flags["Ocaptures"] = 1;
+            board.flags["Oendgame"] = 0;
             Debug.Log("<color=purple>captures=1</color>");
         }
         else if (!turn)
         {
             push_piece("Triangle24");
             board.flags["Gcaptures"] = 1;
+            board.flags["Gendgame"] = 0;
             Debug.Log("<color=purple>captures=2</color>");
 
         }
@@ -325,12 +437,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private bool check_available_moves()
     {
         Debug.Log("<color=purple>check_available_moves()</color>");
-        int[] green_stacks = new int[24];
-        int[] orange_stacks = new int[24];
-        green_stacks = get_stacks('G');
-        orange_stacks = get_stacks('O');
         if (turn)//check available moves for orange
         {
+            if (board.flags["Oendgame"] == 1)
+                return true;
+            int[] orange_stacks = new int[24];
+            orange_stacks = get_stacks('O');
             if (board.flags["Ocaptures"] == 1)//check available moves for orange captured stack
             {
                 source_triangle = ORANGE_CAPTURED_STACK;
@@ -355,6 +467,10 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
         else if (!turn)//check available moves for green
         {
+            if (board.flags["Gendgame"] == 1)
+                return true;
+            int[] green_stacks = new int[24];
+            green_stacks = get_stacks('G');
             if (board.flags["Gcaptures"] == 1)//check available moves for green captured stack
             {
                 source_triangle = GREEN_CAPTURED_STACK;
@@ -377,11 +493,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
             return false;
         }
         return false;
-    }
-
-    private void captured_turn()
-    {
-        Debug.Log("captured_turn");
     }
 
     private int[] get_stacks(char color)
@@ -411,6 +522,19 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public IEnumerator CR_wait_frame()
     {
             yield return null;
+    }
+
+    private void endgame_press(string name)
+    {
+        if (turn)
+        {
+
+        }
+
+        else if (!turn)
+        {
+
+        }
     }
     #endregion
 }

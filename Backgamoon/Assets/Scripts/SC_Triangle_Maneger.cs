@@ -93,7 +93,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
         Debug.Log("<color=orange>84. pressed_triangle" + name+" Turn_moves= "+turn_moves+"</color>");
         turn_off_dest_triangles();
-        if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
+        if (get_triangle_number(name) == dest_triangles[0]
+            || get_triangle_number(name) == dest_triangles[1] )
             handle_press_as_new_location(name);
         else if (board.flags["turn_stage"] == 1)//pressing on source triangle
             handle_press_after_throw(name);
@@ -174,7 +175,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         {
             if(turn && board.flags["Oendgame"]==1 )
             {
-                if (triangle_number==LAST_TRIANGLE )
+                if (triangle_number==LAST_TRIANGLE +1 )
                     get_triangle_script("Triangle"+source_triangle).pop_piece();
                 else if(triangle_number > LAST_TRIANGLE )
                 {//takes out greater triangle than cube. check if there are greater triangles
@@ -320,15 +321,11 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if (board.flags["double"] == 1)
             dest_triangles[0] = dest_triangles[1] = -2;
         else if (dest_triangles[0] == triangle_number)
-        {
-            dest_triangles[0] = -2;
             triangle_number = dest_triangles[1];
-        }
         else if (dest_triangles[1] == triangle_number)
-        {
-            dest_triangles[1] = -2;
             triangle_number = dest_triangles[0];
-        }
+        dest_triangles[1] = -2;
+        dest_triangles[0] = -2;
         is_endgame();
         is_finish();
     }

@@ -202,6 +202,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
             else if (!turn)
                 update_dice(source_triangle - triangle_number);
         }
+        turn_off_dest_triangles();
         turn_moves++;
         end_move(triangle_number);
         StartCoroutine(CR_check_available_moves());
@@ -257,9 +258,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         string number = name.Substring("Triangle".Length);
         int num = int.Parse(number);
-            if (num >= -1 && num <= 24)
-                return num;
-        return -2;
+            //if (num >= -1 && num <= 24)
+        return num;
+        //return -2;
     }
 
     void update_dice(int n)
@@ -529,8 +530,10 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private IEnumerator CR_check_available_moves()
     {
         yield return null; // wait until the next frame
-        if (turn_moves>=1 && !check_available_moves())
+        if (turn_moves >= 1 && !check_available_moves())
+        {
             no_available_moves();
+        }
     }
 
     public IEnumerator CR_wait_frame()

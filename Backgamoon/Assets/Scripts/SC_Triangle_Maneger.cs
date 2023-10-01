@@ -86,12 +86,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     void pressed_triangle(string name)
     {
-
+        
         if (get_triangle_number(name) == source_triangle)
         {
             Debug.Log("<color=red>repressed, cancele the press</color>");
         }
-        Debug.Log("<color=orange>84. pressed_triangle " + name+"</color>");
+        Debug.Log("<color=orange>84. pressed_triangle" + name+" Turn_moves= "+turn_moves+"</color>");
         turn_off_dest_triangles();
         if (get_triangle_number(name) == dest_triangles[0] || get_triangle_number(name) == dest_triangles[1])
             handle_press_as_new_location(name);
@@ -160,9 +160,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private void handle_press_as_new_location(string name)
     {
-        Debug.Log("handle_press_as_new_location " + name);
+        Debug.Log("handle_press_as_new_location " + name+"turn_moves will be= "+(turn_moves+1));
         int triangle_number = get_triangle_number(name);
-        turn_moves++;
         if (triangle_number >= FIRST_TRIANGLE && triangle_number <= LAST_TRIANGLE) //triangle number is in game scope
         {
             SC_Triangle sc_triangle = get_triangle_script(name);
@@ -173,9 +172,22 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
         else //triangle number is outside scope, means endgame
         {
-            if(turn && board.flags["Oendgame"]==1)
+            if(turn && board.flags["Oendgame"]==1 )
             {
-                get_triangle_script("Triangle"+source_triangle).pop_piece();
+                if (triangle_number==LAST_TRIANGLE )
+                    get_triangle_script("Triangle"+source_triangle).pop_piece();
+                else if(triangle_number > LAST_TRIANGLE )
+                {//takes out greater triangle than cube. check if there are greater triangles
+                    for(int i = FIRST_O_TRIANGLE; i < source_triangle; i++)
+                    {
+                        if (!get_triangle_script("Triangle" + i).is_stack_empty())
+                        {
+                            end_move(-1);
+                            return;
+                        }
+                    }
+                    get_triangle_script("Triangle" + source_triangle).pop_piece();
+                }
             }
             else if (!turn && board.flags["Gendgame"] == 1)
             {
@@ -189,6 +201,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
             else if (!turn)
                 update_dice(source_triangle - triangle_number);
         }
+        turn_moves++;
         end_move(triangle_number);
         StartCoroutine(CR_check_available_moves());
 
@@ -236,7 +249,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     SC_Triangle get_triangle_script(string name)
     {
-        Debug.Log("get_triangle_script " + name);
         return Triangles[name].GetComponent<SC_Triangle>();
     }
 
@@ -275,15 +287,20 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if (turn_moves == 4 && board.flags["double"] == 1)
         {
             init_vars();
+            is_endgame();
+            is_finish();
             finish_turn();
             return;
         }
         else if (turn_moves == 2 && board.flags["double"] == 0)
         {
             init_vars();
+            is_endgame();
+            is_finish();
             finish_turn();
             return;
         }
+        // if turn is not done:
         if(turn_moves>0)//zero capture flag if captured_flag is empty
         {
             if (turn && get_triangle_script("Triangle" + ORANGE_CAPTURED_STACK).is_stack_empty())

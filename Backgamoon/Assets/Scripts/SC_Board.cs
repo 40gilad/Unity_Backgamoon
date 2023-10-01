@@ -145,7 +145,10 @@ public class SC_Board : MonoBehaviour
     public void ChangeTurn()
     {
         turn = !turn;
-
+        if (turn)
+            Debug.Log("<color=orange>ORANGE TURN</color>");
+        else if (!turn)
+            Debug.Log("<color=green>GREEN TURN</color>");
         rotate_camera();
         zero_flags();
         init_dice();

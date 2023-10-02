@@ -178,7 +178,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
                 if (triangle_number==LAST_TRIANGLE +1 )
                     get_triangle_script("Triangle"+source_triangle).pop_piece();
                 else if(triangle_number > LAST_TRIANGLE )
-                {//takes out greater triangle than cube. check if there are greater triangles
+                {//takes out smaller triangle than cube. check if there are greater triangles
                     for(int i = FIRST_O_TRIANGLE; i < source_triangle; i++)
                     {
                         if (!get_triangle_script("Triangle" + i).is_stack_empty())
@@ -192,7 +192,20 @@ public class SC_Triangle_Maneger : MonoBehaviour
             }
             else if (!turn && board.flags["Gendgame"] == 1)
             {
-                get_triangle_script("Triangle" + source_triangle).pop_piece();
+                if (triangle_number == FIRST_TRIANGLE - 1)
+                    get_triangle_script("Triangle" + source_triangle).pop_piece();
+                else if (triangle_number < FIRST_G_TRIANGLE)
+                {//takes out smaller triangle than cube. check if there are greater triangles
+                    for (int i = FIRST_G_TRIANGLE; i > source_triangle; i--)
+                    {
+                        if (!get_triangle_script("Triangle" + i).is_stack_empty())
+                        {
+                            end_move(-1);
+                            return;
+                        }
+                    }
+                    get_triangle_script("Triangle" + source_triangle).pop_piece();
+                }
             }
         }
         if (board.flags["double"] != 1)

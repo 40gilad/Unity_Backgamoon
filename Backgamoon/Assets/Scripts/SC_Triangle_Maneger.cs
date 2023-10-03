@@ -58,6 +58,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         Debug.Log("OnEnable");
         SC_Board.Turn += Turn;
+        SC_Board.play_singleplayer += play_singleplayer;
         SC_Triangle.pressed_triangle += pressed_triangle;
         SC_DiceManeger.Roll_Dice += Roll_Dice;
     }
@@ -66,6 +67,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         Debug.Log("OnDisable");
         SC_Board.Turn -= Turn;
+        SC_Board.play_singleplayer -= play_singleplayer;
         SC_Triangle.pressed_triangle -= pressed_triangle;
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
     }
@@ -224,6 +226,37 @@ public class SC_Triangle_Maneger : MonoBehaviour
     #endregion
 
     #region Support functions
+
+    public void play_singleplayer()
+    {
+        int moves = 0;
+        if (board.flags["double"] == 0)
+            moves = 2;
+        else if (board.flags["double"] == 1)
+            moves = 4;
+
+        for (int i = 0; i < moves; i++)
+        {
+            if (board.flags["Gendgame"] == 1)
+                Debug.Log("Decrement any piece");
+            int[] green_move = get_green_dest();
+            if (green_move[0] == -1)
+                no_available_moves();
+            else
+            {
+                pressed_triangle("Triangle" + green_move[0]);
+                pressed_triangle("Triangle" + green_move[1]);
+            }
+ 
+        }
+    }
+
+    IEnumerator CR_play_green(int[] green_move )
+    {
+        yield return new WaitForSeconds(1);
+        pressed_triangle("Triangle" + green_move[0]);
+        pressed_triangle("Triangle" + green_move[1]);
+    }
     private bool is_valid_press(string name)
     {
         Debug.Log("is_valid_press " + name);
@@ -462,6 +495,36 @@ public class SC_Triangle_Maneger : MonoBehaviour
         turn = !turn;
     }
 
+    private int[] get_green_dest()
+    {
+        int[] no_moves = new int[2] { -1, -1 }; 
+        int[] green_stacks = new int[24];
+        green_stacks = get_stacks('G');
+        if (board.flags["Gcaptures"] == 1)//check available moves for green captured stack
+        {
+            source_triangle = GREEN_CAPTURED_STACK;
+            if (curr_dice[0] != 0 && is_valid_destination(LAST_TRIANGLE - (curr_dice[0] - 1)))
+                return new int[] { source_triangle, LAST_TRIANGLE - (curr_dice[0] - 1) };
+
+            else if (curr_dice[1] != 0 && is_valid_destination(LAST_TRIANGLE - (curr_dice[1] - 1)))
+                return new int [] { source_triangle, LAST_TRIANGLE -(curr_dice[1] - 1)};
+            else
+                return no_moves;
+        }
+        for (int i = 0; i < 24; i++)
+        {
+            if (green_stacks[i] != -2)
+            {
+                source_triangle = green_stacks[i];
+                if (curr_dice[0] != 0 && is_valid_destination(i - curr_dice[0]))
+                    return new int[] { source_triangle, i - curr_dice[0] };
+                else if (curr_dice[1] != 0 && is_valid_destination(i - curr_dice[1]))
+                    return new int[] { source_triangle, i - curr_dice[1] };
+            }
+        }
+        return no_moves;
+
+    }
     private bool check_available_moves()
     {
         Debug.Log("<color=purple>check_available_moves()</color>");

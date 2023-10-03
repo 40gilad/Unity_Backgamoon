@@ -7,6 +7,8 @@ public class SC_Board : MonoBehaviour
 {
     public delegate void Turn_Handler(bool t);
     public static Turn_Handler Turn;
+    public delegate void SinglePlayer_Handler();
+    public static SinglePlayer_Handler play_singleplayer;
     public Dictionary<string, int> flags;
 
     GameObject Sprite_x;
@@ -14,7 +16,7 @@ public class SC_Board : MonoBehaviour
     GameObject[] DiceRoller=null;
     int[] curr_dice;
     bool turn; // true= orange turn false= green turn
-    public bool multiplayer = true;
+    public bool multiplayer = false;
 
     #region README
     /************************************************************************************************/
@@ -159,24 +161,30 @@ public class SC_Board : MonoBehaviour
         if(Sprite_x.activeSelf)
             Sprite_x.SetActive(false);
         Turn(turn);
+        if (!turn && !multiplayer)
+        {
+            DiceRoller[0].GetComponent<SC_DiceManeger>().Roll();
+            play_singleplayer();
+        }
     }
+
 
     private void rotate_camera()
     {
         if (multiplayer)
-        {
-            Vector3 rotation;
-            if (turn)
-                rotation = new Vector3(0, 0, 0);
-            else
-                rotation = new Vector3(0, 0, 180);
-            camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
-
-            //Change dice position()
-        }
-
+            StartCoroutine(CR_rotate_camera());
     }
 
+    IEnumerator CR_rotate_camera()
+    {
+        yield return new WaitForSeconds(1);
+        Vector3 rotation;
+        if (turn)
+            rotation = new Vector3(0, 0, 0);
+        else
+            rotation = new Vector3(0, 0, 180);
+        camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
+    }
     private void is_game_finish()
     {
         Debug.Log("<color=red>Write is game finished logic</color>");

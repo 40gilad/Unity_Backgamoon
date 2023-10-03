@@ -26,14 +26,14 @@ public class SC_DiceManeger : MonoBehaviour
 
     private void OnMouseDown()
     {
-        //for checking doubles logic
-        //int x=-3, y=-5;
-        //while (x != y) {
-        //    x = Random.Range(1, 7);
-        //    y = Random.Range(1, 7);
-        //        }
+        Roll();
+    }
+
+    public void Roll()
+    {
         Roll_Dice(Random.Range(1, 7), Random.Range(1, 7));
         gameObject.SetActive(false);
     }
+
 
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 public class SC_Board : MonoBehaviour
 {
@@ -11,12 +12,13 @@ public class SC_Board : MonoBehaviour
     public static SinglePlayer_Handler play_singleplayer;
     public Dictionary<string, int> flags;
 
+    //public SC_BackgamoonConnect backgamoon_connect;
     GameObject Sprite_x;
     GameObject camera;
-    GameObject[] DiceRoller=null;
+     GameObject[] DiceRoller = new GameObject[2];
     int[] curr_dice;
-    bool turn; // true= orange turn false= green turn
-    public bool multiplayer = false;
+    bool turn;
+    public bool multiplayer;
 
     #region README
     /************************************************************************************************/
@@ -44,11 +46,9 @@ public class SC_Board : MonoBehaviour
     #region MonoBehaviour
     void Awake()
     {
-        DiceRoller = new GameObject[2];
-        DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
-        DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
-        if(multiplayer)
-            camera = GameObject.Find("Main Camera");
+       DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
+       DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
+        camera = GameObject.Find("Main Camera");
         flags= new Dictionary<string, int>();
         curr_dice = new int[2];
         Sprite_x = GameObject.Find("Sprite_X");
@@ -59,6 +59,7 @@ public class SC_Board : MonoBehaviour
         /* for orange to start: turn= false */
         turn = false;
         init_flags();
+        //multiplayer = backgamoon_connect.get();
         ChangeTurn();
     }
 
@@ -151,7 +152,8 @@ public class SC_Board : MonoBehaviour
             Debug.Log("<color=orange>ORANGE TURN</color>");
         else if (!turn)
             Debug.Log("<color=green>GREEN TURN</color>");
-        rotate_camera();
+        if(multiplayer)
+            rotate_camera();
         zero_flags();
         init_dice();
 
@@ -167,7 +169,6 @@ public class SC_Board : MonoBehaviour
             play_singleplayer();
         }
     }
-
 
     private void rotate_camera()
     {
@@ -185,10 +186,15 @@ public class SC_Board : MonoBehaviour
             rotation = new Vector3(0, 0, 180);
         camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
     }
+
     private void is_game_finish()
     {
         Debug.Log("<color=red>Write is game finished logic</color>");
     }
     #endregion
 
+    public void exit_game()
+    {
+        SceneManager.LoadScene("SampleScene");
+    }
 }

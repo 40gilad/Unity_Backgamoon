@@ -8,17 +8,13 @@ public class SC_Triangle : MonoBehaviour
 {
     public delegate void Triangle_press_handler(string name);
     public static Triangle_press_handler pressed_triangle;
-    GameObject Sprite_Triangle;
+    public GameObject Sprite_Triangle;
     SC_TrianglePiecesStack Triangle_Stack;
     void Awake()
     {
         Triangle_Stack= transform.Find("TrianglePiecesStack").GetComponent<SC_TrianglePiecesStack>();
     }
 
-    private void Start()
-    {
-        Sprite_Triangle = transform.Find("Sprite_Triangle").gameObject;
-    }
 
     private void OnMouseDown()
     {

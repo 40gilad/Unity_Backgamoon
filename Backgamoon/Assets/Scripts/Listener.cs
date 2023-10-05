@@ -320,6 +320,7 @@ namespace AssemblyCSharp
 		
 		public void onMoveCompleted(MoveEvent move)
 		{
+			Debug.Log("Move comleted!");
 			if (OnMoveCompleted != null)
 				OnMoveCompleted(move);
 		}

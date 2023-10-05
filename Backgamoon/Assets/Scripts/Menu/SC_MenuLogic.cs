@@ -22,7 +22,7 @@ public class SC_MenuLogic : MonoBehaviour
     private List<string> roomIds;
     private int maxRoomUsers = 2;
     private int roomIndex;
-    public int TurnTime = 30;
+    public int TurnTime = 20;
     string roomId;
     int connectionTrys = 0;
     int createRoomTrys = 0;
@@ -59,6 +59,7 @@ public class SC_MenuLogic : MonoBehaviour
     private void InitStart()
     {
         unityObjects["Btn_Play"].GetComponent<Button>().interactable = true;
+        StartCoroutine(CR_SetGameScreenInactive());
     }
 
     private void OnEnable()
@@ -68,6 +69,8 @@ public class SC_MenuLogic : MonoBehaviour
         Listener.OnCreateRoom += OnCreateRoom;
         Listener.OnJoinRoom += OnJoinRoom;
         Listener.OnGetLiveRoomInfo += OnGetLiveRoomInfo;
+        Listener.OnUserJoinRoom += OnUserJoinRoom;
+        Listener.OnGameStarted += OnGameStarted;
     }
 
 
@@ -78,8 +81,8 @@ public class SC_MenuLogic : MonoBehaviour
         Listener.OnCreateRoom -= OnCreateRoom;
         Listener.OnJoinRoom -= OnJoinRoom;
         Listener.OnGetLiveRoomInfo -= OnGetLiveRoomInfo;
-
-
+        Listener.OnUserJoinRoom -= OnUserJoinRoom;
+        Listener.OnGameStarted -= OnGameStarted;
 
 
     }
@@ -90,6 +93,12 @@ public class SC_MenuLogic : MonoBehaviour
 
     #region Logic
 
+    IEnumerator CR_SetGameScreenInactive()
+    {
+        yield return new WaitForSeconds(2f);
+
+        unityObjects["Screen_Game"].SetActive(false);
+    }
     void JoinRoom()
     {
         joinRoomTrys++;
@@ -219,6 +228,16 @@ public class SC_MenuLogic : MonoBehaviour
         }
     }
 
+    private void OnUserJoinRoom(RoomData eventObj, string _UserName)
+    {
+        if (eventObj.getRoomOwner() == userId && userId != _UserName)
+        {
+            UpdateStatus("User  " + _UserName + " Joined room");
+            UpdateStatus("Starting game...");
+            WarpClient.GetInstance().startGame();
+        }
+    }
+
     private void OnCreateRoom(bool _IsSuccess, string _RoomId)
     {
         Debug.Log("OnCreateRoom " + _IsSuccess + " " + _RoomId);
@@ -256,6 +275,15 @@ public class SC_MenuLogic : MonoBehaviour
             roomIndex++;
             SearchRooms();
         }
+    }
+
+    private void OnGameStarted(string _Sender, string _RoomId, string _NextTurn)
+    {
+        UpdateStatus("Game Started! Turn: "+ _NextTurn);
+        unityObjects["Screen_Menu"].SetActive(false);
+        unityObjects["Screen_Game"].SetActive(true);
+
+
     }
 
     #endregion

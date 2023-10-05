@@ -95,7 +95,7 @@ public class SC_MenuLogic : MonoBehaviour
 
     IEnumerator CR_SetGameScreenInactive()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         unityObjects["Screen_Game"].SetActive(false);
     }

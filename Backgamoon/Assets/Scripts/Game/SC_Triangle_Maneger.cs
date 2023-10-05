@@ -14,7 +14,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public static No_Moves_Handler no_available_moves;
     public delegate void Game_Finished_Handler(char color);
     public static Game_Finished_Handler game_finished;
-    public bool finished_init = false;
     Dictionary<string, GameObject> Triangles;
 
     /******************* CONSTANTS ***********************/

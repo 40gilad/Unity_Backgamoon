@@ -51,7 +51,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         Debug.Log("Start");
         init_triangles_dict();
         init_vars();
-        direction_accelerator = 1;//needs to be set to 0
+        direction_accelerator = 0;//needs to be set to 0
     }
 
     private void OnEnable()

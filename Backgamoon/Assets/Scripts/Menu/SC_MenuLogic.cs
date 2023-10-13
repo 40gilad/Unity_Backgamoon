@@ -98,6 +98,7 @@ public class SC_MenuLogic : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         unityObjects["Screen_Game"].SetActive(false);
+        Debug.Log("Screen_Game is off");
     }
     void JoinRoom()
     {
@@ -201,6 +202,8 @@ public class SC_MenuLogic : MonoBehaviour
             foreach (var RoomData in eventObj.getRoomsData())
             {
                 Debug.Log("Room Id: " + RoomData.getId());
+                if (RoomData.getId() == "964863609")
+                    continue;
                 Debug.Log("Room Owner: " + RoomData.getRoomOwner());
                 roomIds.Add(RoomData.getId());
             }
@@ -282,6 +285,7 @@ public class SC_MenuLogic : MonoBehaviour
         UpdateStatus("Game Started! Turn: "+ _NextTurn);
         unityObjects["Screen_Menu"].SetActive(false);
         unityObjects["Screen_Game"].SetActive(true);
+        Debug.Log("Screen Game on");
 
 
     }

@@ -51,6 +51,7 @@ public class SC_TrianglePiecesStack : MonoBehaviour
             piece_2_destroy = "GreenPiece" + top--;
         else
             return;
+        Debug.Log("Destroy " + piece_2_destroy);
         Destroy(transform.Find(piece_2_destroy).gameObject);
 
         if (top == 0)

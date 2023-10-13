@@ -61,8 +61,10 @@ public class SC_TrianglePiecesStack : MonoBehaviour
     public void push_piece(GameObject piece,char color)
     {
         piece.transform.parent = transform;
+        Quaternion zeroRotation = Quaternion.Euler(Vector3.zero);
         piece.GetComponent<Transform>().localPosition = new Vector3 (0,pieces_distance*(top),0);
         piece.GetComponent<Transform>().localScale = new Vector3(1, 1, 1);
+        piece.GetComponent<Transform>().localRotation = zeroRotation;
         piece.GetComponent<SC_Piece>().change_piece_name(++top,color);
         StartCoroutine(update_stack_color());
 

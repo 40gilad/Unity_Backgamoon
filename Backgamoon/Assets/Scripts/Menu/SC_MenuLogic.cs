@@ -22,7 +22,7 @@ public class SC_MenuLogic : MonoBehaviour
     private List<string> roomIds;
     private int maxRoomUsers = 2;
     private int roomIndex;
-    public int TurnTime = 20;
+    public int TurnTime = 40;
     string roomId;
     int connectionTrys = 0;
     int createRoomTrys = 0;

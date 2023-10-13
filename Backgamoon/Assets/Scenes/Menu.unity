@@ -1478,7 +1478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007b6ad510b03f14981333c70f583c94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stack_color: 0
+  stack_color: 85
   top: 0
 --- !u!1001 &578384094
 PrefabInstance:
@@ -1829,7 +1829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007b6ad510b03f14981333c70f583c94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stack_color: 0
+  stack_color: 67
   top: 0
 --- !u!1 &719629949 stripped
 GameObject:
@@ -4721,6 +4721,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GreenPiece5
       objectReference: {fileID: 0}
+    - target: {fileID: 4696474513178337439, guid: 76b923253ea80ae4e870a509e7f55d7f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4997696082948970972, guid: 76b923253ea80ae4e870a509e7f55d7f,
         type: 3}
       propertyPath: m_Name
@@ -5693,7 +5698,7 @@ Transform:
   m_GameObject: {fileID: 1728685439}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.0200002, y: 0.6799965, z: 0}
+  m_LocalPosition: {x: 0, y: 0.68, z: 0}
   m_LocalScale: {x: 1, y: -1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

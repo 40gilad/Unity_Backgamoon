@@ -65,7 +65,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("OnDisable");
+        Debug.Log("SC_Triangle_Maneger OnDisable");
         SC_Board.Turn -= Turn;
         SC_Board.play_singleplayer -= play_singleplayer;
         SC_Triangle.pressed_triangle -= pressed_triangle;

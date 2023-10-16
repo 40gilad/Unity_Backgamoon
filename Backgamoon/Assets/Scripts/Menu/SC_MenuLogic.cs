@@ -16,13 +16,11 @@ public class SC_MenuLogic : MonoBehaviour
 
     #endregion
     private Listener listner;
-    private string userId=string.Empty;
     public Dictionary<string, GameObject> unityObjects;
     private Dictionary<string, object> passedParams;
     private List<string> roomIds;
     private int maxRoomUsers = 2;
     private int roomIndex;
-    public int TurnTime = 40;
     string roomId;
     int connectionTrys = 0;
     int createRoomTrys = 0;
@@ -121,14 +119,15 @@ public class SC_MenuLogic : MonoBehaviour
 
     private void CreateRoom()
     {
+
         createRoomTrys++;
         UpdateStatus("Creating Room...");
         WarpClient.GetInstance().CreateTurnRoom(
                         "Backgamoon" + (roomIds.Count + 1),
-                        userId,
+                        GlobalVars.userId,
                         maxRoomUsers,
                         passedParams,
-                        TurnTime
+                        GlobalVars.TurnTime
                         );
 
     }
@@ -156,8 +155,8 @@ public class SC_MenuLogic : MonoBehaviour
         WarpClient.GetInstance().AddTurnBasedRoomRequestListener(listner);
         WarpClient.GetInstance().AddZoneRequestListener(listner);
 
-        userId = System.Guid.NewGuid().ToString();
-        unityObjects["Txt_UserId"].GetComponent<TextMeshProUGUI>().text = "UserId: " + userId;
+        GlobalVars.userId = System.Guid.NewGuid().ToString();
+        unityObjects["Txt_UserId"].GetComponent<TextMeshProUGUI>().text = "UserId: " + GlobalVars.userId;
         connectServer();
 
     }
@@ -165,7 +164,7 @@ public class SC_MenuLogic : MonoBehaviour
     void connectServer()
     {
         connectionTrys++;
-        WarpClient.GetInstance().Connect(userId);
+        WarpClient.GetInstance().Connect(GlobalVars.userId);
         UpdateStatus("Try To Connect Server...");
     }
     private void UpdateStatus(string _Str)
@@ -233,7 +232,8 @@ public class SC_MenuLogic : MonoBehaviour
 
     private void OnUserJoinRoom(RoomData eventObj, string _UserName)
     {
-        if (eventObj.getRoomOwner() == userId && userId != _UserName)
+        GlobalVars.orange=eventObj.getRoomOwner();
+        if (eventObj.getRoomOwner() == GlobalVars.userId && GlobalVars.userId != _UserName)
         {
             UpdateStatus("User  " + _UserName + " Joined room");
             UpdateStatus("Starting game...");
@@ -262,7 +262,8 @@ public class SC_MenuLogic : MonoBehaviour
 
     private void OnGetLiveRoomInfo(LiveRoomInfoEvent eventObj)
     {
-        Debug.Log("OnGetLiveRoomInfo ");
+        GlobalVars.orange=eventObj.getData().getRoomOwner();
+        Debug.Log("OnGetLiveRoomInfo , room owner= "+ GlobalVars.orange);
         UpdateStatus("OnGetLiveRoomInfo Recieved room data");
         Dictionary<string, object> room_prop = eventObj.getProperties();
         string curr_pass = passedParams["Password"].ToString();
@@ -282,12 +283,12 @@ public class SC_MenuLogic : MonoBehaviour
 
     private void OnGameStarted(string _Sender, string _RoomId, string _NextTurn)
     {
+        Debug.Log("SC_MenuLogic: OnGameStarted Orange= " + GlobalVars.orange + " MyId= " + GlobalVars.userId);
         UpdateStatus("Game Started! Turn: "+ _NextTurn);
         unityObjects["Screen_Menu"].SetActive(false);
         unityObjects["Screen_Game"].SetActive(true);
         Debug.Log("Screen Game on");
-
-
+        unityObjects["Board"].GetComponent<SC_Board>().StartGame(_NextTurn);
     }
 
     #endregion

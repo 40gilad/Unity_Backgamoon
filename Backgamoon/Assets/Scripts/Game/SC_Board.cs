@@ -1,3 +1,4 @@
+using AssemblyCSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ public class SC_Board : MonoBehaviour
      GameObject[] DiceRoller = new GameObject[2];
     int[] curr_dice;
     bool turn;
+    private string nextTurn;
+    private float startTime;
     public bool multiplayer;
 
     #region README
@@ -77,9 +80,8 @@ public class SC_Board : MonoBehaviour
         SC_Triangle_Maneger.finish_turn -= Finish_Turn;
         SC_Triangle_Maneger.no_available_moves -= No_Moves;
         SC_Triangle_Maneger.game_finished -= finish_game;
-
-
     }
+
 
     #endregion
 
@@ -106,6 +108,19 @@ public class SC_Board : MonoBehaviour
             Debug.Log("<color=orange>ORANGE WON!!</color>");
         if(color=='G')
             Debug.Log("<color=green>GREEN WON!!</color>");
+    }
+
+    public void StartGame(string _NextTurn)
+    {
+        Debug.Log("Board StartGame Room owner= " + GlobalVars.orange + "myId= "+GlobalVars.userId);
+        nextTurn = _NextTurn;
+        startTime = Time.time;
+
+
+        if(GlobalVars.userId==nextTurn)
+            turn = true;
+        else
+            turn = false;
     }
     #endregion
 

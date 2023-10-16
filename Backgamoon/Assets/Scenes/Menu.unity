@@ -238,7 +238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22314b6d034efe345a317c36e8ab600f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TurnTime: 20
 --- !u!1 &80199646 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4409212762933961674, guid: 0a8b81bca2a58cb498420203f956ccab,
@@ -4840,6 +4839,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Board
+      objectReference: {fileID: 0}
+    - target: {fileID: 8638437068900083567, guid: 76b923253ea80ae4e870a509e7f55d7f,
+        type: 3}
+      propertyPath: m_TagString
+      value: UnityObject
       objectReference: {fileID: 0}
     - target: {fileID: 8812699489899341016, guid: 76b923253ea80ae4e870a509e7f55d7f,
         type: 3}

@@ -175,6 +175,7 @@ public class SC_MenuLogic : MonoBehaviour
     #region ServerCallbacks
     private void OnConnect(bool _IsSuccess)
     {
+        Debug.Log("try to connect " + connectionTrys);
         Debug.Log("OnConnect " + _IsSuccess);
         if (_IsSuccess)
         {

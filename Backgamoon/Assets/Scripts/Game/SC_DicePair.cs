@@ -31,10 +31,15 @@ public class SC_DicePair : MonoBehaviour
 
     }
 
-    private void Roll_Dice(int left, int right=0)
+    public void Roll_Dice(int left, int right=0)
     {
         MyDice[0].Set_Dice_Number(left);
         MyDice[1].Set_Dice_Number(right);
-
+    }
+    
+    public void set_dice(int left,int right)
+    {
+        MyDice[0].Set_Dice_Number(left);
+        MyDice[1].Set_Dice_Number(right);
     }
 }

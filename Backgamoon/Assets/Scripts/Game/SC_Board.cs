@@ -160,18 +160,33 @@ public class SC_Board : MonoBehaviour
         if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() != null) // other player sent and it's not null
         {
             Dictionary<string, object> data = (Dictionary<string, object>)MiniJSON.Json.Deserialize(_Move.getMoveData());
-            Debug.Log("fsdfdsfddf");
             if (data.ContainsKey("dice"))
             {
                 // Extract the "dice" dictionary from the JSON data
                 Dictionary<string, object> diceData = (Dictionary<string, object>)data["dice"];
 
                 // Get the left and right dice values
-                int leftDiceValue =int.Parse(diceData["left"].ToString());
+                int leftDiceValue = int.Parse(diceData["left"].ToString());
                 int rightDiceValue = int.Parse(diceData["right"].ToString());
 
-                Debug.Log("finally: "+leftDiceValue+" "+rightDiceValue);
-                dice_maneger.Roll_Dice(leftDiceValue,rightDiceValue);
+                Debug.Log("finally: " + leftDiceValue + " " + rightDiceValue);
+                dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
+            }
+            else if (data.ContainsKey("moves"))
+            {
+                Dictionary<object, object> move = (Dictionary<object, object>)data["moves"];
+                foreach (KeyValuePair<object, object> moveEntry in move)
+                {
+                    int moveKey = (int)moveEntry.Key;
+                    int moveValue = (int)moveEntry.Value;
+
+                    // Use the extracted move key and value as needed
+                    Debug.Log("Move: " + moveKey + " -> " + moveValue);
+                    // You can use moveKey and moveValue to perform any necessary actions based on the move
+
+                }
+
+
             }
         }
     }

@@ -15,6 +15,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public delegate void Game_Finished_Handler(char color);
     public static Game_Finished_Handler game_finished;
     Dictionary<string, GameObject> Triangles;
+    Dictionary<string, Dictionary<int, int>> moves_to_send;
 
     /******************* CONSTANTS ***********************/
     private const int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
@@ -41,6 +42,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         Debug.Log("Awake");
         Triangles = new Dictionary<string, GameObject>();
+        moves_to_send= new Dictionary<string, Dictionary<int, int>>();
+        moves_to_send.Add("moves", new Dictionary<int, int>());
         board = GameObject.Find("Board").GetComponent<SC_Board>();
         curr_dice = new int[2];
         dest_triangles = new int[2];
@@ -164,8 +167,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private void handle_press_as_new_location(string name)
     {
         Debug.Log("handle_press_as_new_location " + name + "turn_moves will be= " + (turn_moves + 1));
-        int triangle_number = get_triangle_number(name);
-        if (triangle_number >= FIRST_TRIANGLE && triangle_number <= LAST_TRIANGLE) //triangle number is in game scope
+        int dest_triangle = get_triangle_number(name);
+        if (dest_triangle >= FIRST_TRIANGLE && dest_triangle <= LAST_TRIANGLE) //triangle number is in game scope
         {
             SC_Triangle sc_triangle = get_triangle_script(name);
             get_triangle_script("Triangle" + source_triangle).pop_piece();
@@ -173,18 +176,19 @@ public class SC_Triangle_Maneger : MonoBehaviour
                 captured(name);
             push_piece(name);
         }
-        else //triangle number is outside scope, means endgame
+        else //dest_triangle is outside scope- endgame
         {
-            if (turn && board.flags["Oendgame"] == 1)
+            if (turn && board.flags["Oendgame"] == 1)//orange valdiated as being at endgame
             {
-                if (triangle_number == LAST_TRIANGLE + 1)
+                if (dest_triangle == LAST_TRIANGLE + 1)//taking out from the exact triangle
                     get_triangle_script("Triangle" + source_triangle).pop_piece();
-                else if (triangle_number > LAST_TRIANGLE)
+                else if (dest_triangle > LAST_TRIANGLE+1)
                 {//takes out smaller triangle than cube. check if there are greater triangles
                     for (int i = FIRST_O_TRIANGLE; i < source_triangle; i++)
                     {
                         if (!get_triangle_script("Triangle" + i).is_stack_empty())
                         {
+                            //move illeagle
                             end_move(-1);
                             return;
                         }
@@ -194,14 +198,15 @@ public class SC_Triangle_Maneger : MonoBehaviour
             }
             else if (!turn && board.flags["Gendgame"] == 1)
             {
-                if (triangle_number == FIRST_TRIANGLE - 1)
+                if (dest_triangle == FIRST_TRIANGLE - 1)
                     get_triangle_script("Triangle" + source_triangle).pop_piece();
-                else if (triangle_number < FIRST_G_TRIANGLE)
+                else if (dest_triangle < FIRST_G_TRIANGLE-1)
                 {//takes out smaller triangle than cube. check if there are greater triangles
                     for (int i = FIRST_G_TRIANGLE; i > source_triangle; i--)
                     {
                         if (!get_triangle_script("Triangle" + i).is_stack_empty())
                         {
+                            //move illeagle
                             end_move(-1);
                             return;
                         }
@@ -213,13 +218,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if (board.flags["double"] != 1)
         {
             if (turn)
-                update_dice(triangle_number - source_triangle);
+                update_dice(dest_triangle - source_triangle);
             else if (!turn)
-                update_dice(source_triangle - triangle_number);
+                update_dice(source_triangle - dest_triangle);
         }
+        moves_to_send["moves"].Add(source_triangle, dest_triangle);
         turn_off_dest_triangles();
         turn_moves++;
-        end_move(triangle_number);
+        end_move(dest_triangle);
         StartCoroutine(CR_check_available_moves());
 
     }
@@ -333,16 +339,10 @@ public class SC_Triangle_Maneger : MonoBehaviour
     {
         StartCoroutine(CR_wait_frame());
         Debug.Log("end_move " + triangle_number);
-        if (turn_moves == 4 && board.flags["double"] == 1)
+        if ((turn_moves == 4 && board.flags["double"] == 1)
+            || (turn_moves == 2 && board.flags["double"] == 0))
         {
-            init_vars();
-            is_endgame();
-            is_finish();
-            finish_turn();
-            return;
-        }
-        else if (turn_moves == 2 && board.flags["double"] == 0)
-        {
+            board.send_data(moves_to_send);
             init_vars();
             is_endgame();
             is_finish();

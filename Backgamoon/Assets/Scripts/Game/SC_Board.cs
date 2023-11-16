@@ -7,6 +7,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+
+public class stringIntPair
+{
+    public string left;
+    public int right;
+
+    public stringIntPair(string left, int right)
+    {
+        this.left = left;
+        this.right = right;
+    }
+}
+
 public class SC_Board : MonoBehaviour
 {
     public delegate void Turn_Handler(bool t);
@@ -18,7 +31,7 @@ public class SC_Board : MonoBehaviour
     //public SC_BackgamoonConnect backgamoon_connect;
     GameObject Sprite_x;
     GameObject camera;
-     GameObject[] DiceRoller = new GameObject[2];
+    GameObject[] DiceRoller = new GameObject[2];
     int[] curr_dice;
     bool turn;//true= orange turn
     bool is_my_turn;
@@ -144,22 +157,53 @@ public class SC_Board : MonoBehaviour
     private void OnMoveCompleted(MoveEvent _Move)
     {
         Debug.Log("Got dice from other player: " + _Move.getMoveData());
-        if (_Move.getSender()!=GlobalVars.userId && _Move.getMoveData() !=null)
+        if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() != null) // other player sent and it's not null
         {
-            Dictionary<string, object> dice_data = (Dictionary<string, object>)
-                MiniJSON.Json.Deserialize(_Move.getMoveData());
-            dice_maneger.Roll_Dice(int.Parse(dice_data["left"].ToString()), int.Parse(dice_data["right"].ToString()));
+            Dictionary<string, object> data = (Dictionary<string, object>)MiniJSON.Json.Deserialize(_Move.getMoveData());
+            Debug.Log("fsdfdsfddf");
+            if (data.ContainsKey("dice"))
+            {
+                // Extract the "dice" dictionary from the JSON data
+                Dictionary<string, object> diceData = (Dictionary<string, object>)data["dice"];
+
+                // Get the left and right dice values
+                int leftDiceValue =int.Parse(diceData["left"].ToString());
+                int rightDiceValue = int.Parse(diceData["right"].ToString());
+
+                Debug.Log("finally: "+leftDiceValue+" "+rightDiceValue);
+                dice_maneger.Roll_Dice(leftDiceValue,rightDiceValue);
+            }
         }
     }
 
-    void send_dice(int left,int right)
+    void send_dice(int left, int right)
     {
-        Dictionary<string, int> dice_to_send = new Dictionary<string, int>()
-        { { "left",left }, { "right",right } };
-        string jsonData=MiniJSON.Json.Serialize(dice_to_send);
+        Dictionary<string, Dictionary<string, int>> dice_to_send
+            = new Dictionary<string, Dictionary<string, int>>();
+        dice_to_send.Add("dice", new Dictionary<string, int>());
+        dice_to_send["dice"].Add("left", left);
+        dice_to_send["dice"].Add("right", right);
+        send_data(dice_to_send);
+    }
+
+    /***************************************** send_data overloads *****************************************/
+
+
+    public void send_data(Dictionary<string, Dictionary<string, int>> data)
+    {
+        string jsonData = MiniJSON.Json.Serialize(data);
         Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
     }
+    public void send_data(Dictionary<string, Dictionary<int, int>> data)
+    {
+        string jsonData = MiniJSON.Json.Serialize(data);
+        Debug.Log(jsonData);
+        WarpClient.GetInstance().sendMove(jsonData);
+    }
+
+    /*******************************************************************************************************/
+    #endregion
     private void init_flags()
     {
         flags.Add("turn_stage", 0);
@@ -243,7 +287,6 @@ public class SC_Board : MonoBehaviour
     {
         Debug.Log("<color=red>Write is game finished logic</color>");
     }
-    #endregion
 
     public void exit_game()
     {

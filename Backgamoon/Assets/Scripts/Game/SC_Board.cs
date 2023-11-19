@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using com.shephertz.app42.gaming.multiplayer.client.SimpleJSON;
+using Unity.VisualScripting;
 
 public class stringIntPair
 {
@@ -180,8 +181,8 @@ public class SC_Board : MonoBehaviour
             }
             else if (data.ContainsKey("moves"))
             {
-                Dictionary<string,object> moveData = (Dictionary<string, object>)data["moves"];
-                Debug.Log(moveData);
+                Dictionary<string, string> moveData = (Dictionary<string, string>)data["moves"];
+                Debug.Log("after cast: " + moveData);
             }
         }
     }
@@ -211,8 +212,9 @@ public class SC_Board : MonoBehaviour
         Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
     }
-    public void send_data(Dictionary<string, Dictionary<int[], int[]>> data)
+    public void send_data(Dictionary<string, Dictionary<string, string>> data)
     {
+        /*
         Debug.Log("sending data: " + data+" " + data["moves"]);
         foreach(int[] key in data["moves"].Keys)
         {
@@ -223,10 +225,9 @@ public class SC_Board : MonoBehaviour
                 Debug.Log("source= " + temp[i] + " dest= " + tempD[i]);
             }
         }
+        */
         string jsonData = MiniJSON.Json.Serialize(data);
-        Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
-        Debug.Log("sent moves");
     }
 
     /*******************************************************************************************************/

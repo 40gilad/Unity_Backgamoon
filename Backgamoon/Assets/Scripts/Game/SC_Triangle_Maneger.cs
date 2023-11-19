@@ -37,9 +37,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public GameObject orange_piece;
     public GameObject green_piece;
     Dictionary<string, GameObject> Triangles;
-    Dictionary<string, Dictionary<int[], int[]>> moves_to_send;
-    int[] key_source;
-    int[] val_dest;
+    Dictionary<string, Dictionary<string, string>> moves_to_send;
+    List<int> key_source;
+    List<int> val_dest;
 
 
     #region MonoBehaviour
@@ -358,11 +358,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if ((turn_moves == 4 && board.flags["double"] == 1)
             || (turn_moves == 2 && board.flags["double"] == 0))
         {
-            moves_to_send["moves"].Add(key_source, val_dest);
-            Debug.Log("before send moves");
-            for (int i = 0; i < 4; i++)
+            string Skey_source = string.Join(",", key_source);
+            string Sval_dest = string.Join(",", val_dest);
+            moves_to_send["moves"].Add(Skey_source, Sval_dest);
+
+            Debug.Log(key_source.ToString());
+            foreach (KeyValuePair<string, string> pair in moves_to_send["moves"])
             {
-                Debug.Log(key_source + " , " + val_dest);
+                Debug.Log($"Key: {pair.Key}, Value: {pair.Value}");
             }
             board.send_data(moves_to_send);
             init_vars();
@@ -498,10 +501,10 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private void init_moves_dict()
     {
-        moves_to_send = new Dictionary<string, Dictionary<int[], int[]>>();
-        moves_to_send.Add("moves", new Dictionary<int[], int[]>());
-        key_source = new int[] { -2, -2 ,-2, -2 };
-        val_dest = new int[] { -2, -2 ,-2, -2 };
+        moves_to_send = new Dictionary<string, Dictionary<string, string>>();
+        moves_to_send.Add("moves", new Dictionary<string, string>());
+        key_source = new List<int> { -2, -2, -2, -2 };
+        val_dest = new List<int> { -2, -2, -2, -2 };
 
     }
     private void captured(string name)

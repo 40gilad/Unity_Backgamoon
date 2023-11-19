@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using com.shephertz.app42.gaming.multiplayer.client.SimpleJSON;
 
 public class stringIntPair
 {
@@ -156,7 +157,12 @@ public class SC_Board : MonoBehaviour
 
     private void OnMoveCompleted(MoveEvent _Move)
     {
-        Debug.Log("Got dice from other player: " + _Move.getMoveData());
+        Debug.Log("Got data from other player: " + _Move.getMoveData());
+        if(_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == string.Empty)
+        {
+            Debug.Log("got null from other player");
+            return;
+        }
         if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() != null) // other player sent and it's not null
         {
             Dictionary<string, object> data = (Dictionary<string, object>)MiniJSON.Json.Deserialize(_Move.getMoveData());
@@ -169,24 +175,13 @@ public class SC_Board : MonoBehaviour
                 int leftDiceValue = int.Parse(diceData["left"].ToString());
                 int rightDiceValue = int.Parse(diceData["right"].ToString());
 
-                Debug.Log("finally: " + leftDiceValue + " " + rightDiceValue);
                 dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
+                send_data();
             }
             else if (data.ContainsKey("moves"))
             {
-                Dictionary<object, object> move = (Dictionary<object, object>)data["moves"];
-                foreach (KeyValuePair<object, object> moveEntry in move)
-                {
-                    int moveKey = (int)moveEntry.Key;
-                    int moveValue = (int)moveEntry.Value;
-
-                    // Use the extracted move key and value as needed
-                    Debug.Log("Move: " + moveKey + " -> " + moveValue);
-                    // You can use moveKey and moveValue to perform any necessary actions based on the move
-
-                }
-
-
+                Dictionary<string,object> moveData = (Dictionary<string, object>)data["moves"];
+                Debug.Log(moveData);
             }
         }
     }
@@ -204,17 +199,34 @@ public class SC_Board : MonoBehaviour
     /***************************************** send_data overloads *****************************************/
 
 
+    private void send_data()
+    {
+        //sends null to keep turn to the right player after sending dice
+        Debug.Log("sending null data");
+        WarpClient.GetInstance().sendMove(string.Empty);
+    }
     public void send_data(Dictionary<string, Dictionary<string, int>> data)
     {
         string jsonData = MiniJSON.Json.Serialize(data);
         Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
     }
-    public void send_data(Dictionary<string, Dictionary<int, int>> data)
+    public void send_data(Dictionary<string, Dictionary<int[], int[]>> data)
     {
+        Debug.Log("sending data: " + data+" " + data["moves"]);
+        foreach(int[] key in data["moves"].Keys)
+        {
+            int[] temp = key;
+            int[] tempD = data["moves"][key];
+            for (int i = 0; i < 4; i++)
+            {
+                Debug.Log("source= " + temp[i] + " dest= " + tempD[i]);
+            }
+        }
         string jsonData = MiniJSON.Json.Serialize(data);
         Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
+        Debug.Log("sent moves");
     }
 
     /*******************************************************************************************************/

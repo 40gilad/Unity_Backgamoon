@@ -14,10 +14,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
     public static No_Moves_Handler no_available_moves;
     public delegate void Game_Finished_Handler(char color);
     public static Game_Finished_Handler game_finished;
-    Dictionary<string, GameObject> Triangles;
-    Dictionary<string, Dictionary<int, int>> moves_to_send;
 
-    /******************* CONSTANTS ***********************/
+    /**************************************** CONSTANTS ****************************************/
+
     private const int TRIANGLES_AMOUNT = 25; //triangle 24- green captured, triangle -1 - orange captured
     private const int LAST_TRIANGLE = 23;
     private const int FIRST_TRIANGLE = 0;
@@ -26,6 +25,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     private const int ORANGE_CAPTURED_STACK = -1;
     private const int GREEN_CAPTURED_STACK = 24;
 
+    /*******************************************************************************************/
 
     bool turn;
     int turn_moves;
@@ -36,14 +36,17 @@ public class SC_Triangle_Maneger : MonoBehaviour
     int[] dest_triangles;
     public GameObject orange_piece;
     public GameObject green_piece;
+    Dictionary<string, GameObject> Triangles;
+    Dictionary<string, Dictionary<int[], int[]>> moves_to_send;
+    int[] key_source;
+    int[] val_dest;
+
 
     #region MonoBehaviour
     void Awake()
     {
         Debug.Log("Awake");
         Triangles = new Dictionary<string, GameObject>();
-        moves_to_send= new Dictionary<string, Dictionary<int, int>>();
-        moves_to_send.Add("moves", new Dictionary<int, int>());
         board = GameObject.Find("Board").GetComponent<SC_Board>();
         curr_dice = new int[2];
         dest_triangles = new int[2];
@@ -91,7 +94,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     void pressed_triangle(string name)
     {
-
+        int x = 1;
         if (get_triangle_number(name) == source_triangle)
         {
             Debug.Log("<color=red>repressed, cancele the press</color>");
@@ -222,7 +225,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
             else if (!turn)
                 update_dice(source_triangle - dest_triangle);
         }
-        moves_to_send["moves"].Add(source_triangle, dest_triangle);
+        Debug.Log("added source= " + source_triangle + " dest= " + dest_triangle);
+        add_moves_to_dict(source_triangle, dest_triangle);
         turn_off_dest_triangles();
         turn_moves++;
         end_move(dest_triangle);
@@ -233,6 +237,18 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     #region Support functions
 
+    private void add_moves_to_dict(int source_triangle, int dest_triangle)
+    {
+        for(int i = 0; i < 4; i++)//4 is maximum moves
+        {
+            if (key_source[i]==-2 && val_dest[i]==-2)//-2 represent that theres no value there
+            {
+                key_source[i] = source_triangle;
+                val_dest[i] = dest_triangle;
+                break;
+            }
+        }
+    }
     public void play_singleplayer()
     {
         int moves = 0;
@@ -342,6 +358,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if ((turn_moves == 4 && board.flags["double"] == 1)
             || (turn_moves == 2 && board.flags["double"] == 0))
         {
+            moves_to_send["moves"].Add(key_source, val_dest);
+            Debug.Log("before send moves");
+            for (int i = 0; i < 4; i++)
+            {
+                Debug.Log(key_source + " , " + val_dest);
+            }
             board.send_data(moves_to_send);
             init_vars();
             is_endgame();
@@ -471,8 +493,17 @@ public class SC_Triangle_Maneger : MonoBehaviour
         turn_off_dest_triangles();
         dest_triangles[0] = -2;
         dest_triangles[1] = -2;
+        init_moves_dict();
     }
 
+    private void init_moves_dict()
+    {
+        moves_to_send = new Dictionary<string, Dictionary<int[], int[]>>();
+        moves_to_send.Add("moves", new Dictionary<int[], int[]>());
+        key_source = new int[] { -2, -2 ,-2, -2 };
+        val_dest = new int[] { -2, -2 ,-2, -2 };
+
+    }
     private void captured(string name)
     {
         Debug.Log("captured " + name);

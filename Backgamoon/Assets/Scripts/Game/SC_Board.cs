@@ -181,8 +181,16 @@ public class SC_Board : MonoBehaviour
             }
             else if (data.ContainsKey("moves"))
             {
-                Dictionary<string, string> moveData = (Dictionary<string, string>)data["moves"];
-                Debug.Log("after cast: " + moveData);
+                string moves_string = MiniJSON.Json.Serialize(data["moves"]);
+
+                /******************** convert string to arrays **************************/
+                moves_string = moves_string.Replace("{", "").Replace("}", "").Replace("\"", "");
+                string[] parts = moves_string.Split(':');
+                int[] source_data = ExtractIntArray(parts[0]);
+                int[] dest_data = ExtractIntArray(parts[1]);
+                /************************************************************************/
+                Debug.Log("First Array: " + string.Join(",", source_data));
+                Debug.Log("Second Array: " + string.Join(",", dest_data));
             }
         }
     }
@@ -214,19 +222,9 @@ public class SC_Board : MonoBehaviour
     }
     public void send_data(Dictionary<string, Dictionary<string, string>> data)
     {
-        /*
-        Debug.Log("sending data: " + data+" " + data["moves"]);
-        foreach(int[] key in data["moves"].Keys)
-        {
-            int[] temp = key;
-            int[] tempD = data["moves"][key];
-            for (int i = 0; i < 4; i++)
-            {
-                Debug.Log("source= " + temp[i] + " dest= " + tempD[i]);
-            }
-        }
-        */
+
         string jsonData = MiniJSON.Json.Serialize(data);
+        Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
     }
 
@@ -319,5 +317,20 @@ public class SC_Board : MonoBehaviour
     public void exit_game()
     {
         SceneManager.LoadScene("SampleScene");
+    }
+
+    int[] ExtractIntArray(string input)
+    {
+        // Split the string into individual values
+        string[] values = input.Split(',');
+
+        // Convert values to integers
+        int[] result = new int[values.Length];
+        for (int i = 0; i < values.Length; i++)
+        {
+            result[i] = int.Parse(values[i]);
+        }
+
+        return result;
     }
 }

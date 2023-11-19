@@ -361,12 +361,6 @@ public class SC_Triangle_Maneger : MonoBehaviour
             string Skey_source = string.Join(",", key_source);
             string Sval_dest = string.Join(",", val_dest);
             moves_to_send["moves"].Add(Skey_source, Sval_dest);
-
-            Debug.Log(key_source.ToString());
-            foreach (KeyValuePair<string, string> pair in moves_to_send["moves"])
-            {
-                Debug.Log($"Key: {pair.Key}, Value: {pair.Value}");
-            }
             board.send_data(moves_to_send);
             init_vars();
             is_endgame();

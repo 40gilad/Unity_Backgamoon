@@ -67,6 +67,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         SC_Board.play_singleplayer += play_singleplayer;
         SC_Triangle.pressed_triangle += pressed_triangle;
         SC_DiceManeger.Roll_Dice += Roll_Dice;
+        SC_Board.play_other_player += play_other_player;
     }
 
     private void OnDisable()
@@ -76,6 +77,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
         SC_Board.play_singleplayer -= play_singleplayer;
         SC_Triangle.pressed_triangle -= pressed_triangle;
         SC_DiceManeger.Roll_Dice -= Roll_Dice;
+        SC_Board.play_other_player += play_other_player;
+
     }
     #endregion
 
@@ -115,6 +118,24 @@ public class SC_Triangle_Maneger : MonoBehaviour
         curr_dice[1] = right;
         if (!check_available_moves())
             no_available_moves();
+    }
+
+    private void play_other_player(int[] source, int[] dest)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (source[i] != -2)
+            {
+                get_triangle_script("Triangle" + source[i]).pop_piece();
+                push_piece("Triangle" + dest[i]);
+                source[i] = -2;
+                /*
+                pressed_triangle("Triangle" + source[i]);
+                pressed_triangle(dest[i]);
+                */
+            }
+        }
+
     }
     #endregion
 
@@ -249,6 +270,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
             }
         }
     }
+
     public void play_singleplayer()
     {
         int moves = 0;
@@ -260,8 +282,8 @@ public class SC_Triangle_Maneger : MonoBehaviour
         for (int i = 0; i < moves; i++)
         {
             if (board.flags["Gendgame"] == 1)
-                Debug.Log("Decrement any piece");
-            int[] green_move = get_green_dest();
+                Debug.Log("implement decrement any piece");
+            int[] green_move = get_green_move();
             if (green_move[0] == -1)
                 no_available_moves();
             else
@@ -273,12 +295,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
     }
 
-    IEnumerator CR_play_green(int[] green_move)
-    {
-        yield return new WaitForSeconds(1);
-        pressed_triangle("Triangle" + green_move[0]);
-        pressed_triangle("Triangle" + green_move[1]);
-    }
+
     private bool is_valid_press(string name)
     {
         Debug.Log("is_valid_press " + name);
@@ -480,6 +497,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
             game_finished('G');
         }
     }
+
     private void init_vars()
     {
         Debug.Log("init_vars");
@@ -501,6 +519,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         val_dest = new List<int> { -2, -2, -2, -2 };
 
     }
+
     private void captured(string name)
     {
         Debug.Log("captured " + name);
@@ -525,8 +544,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
         turn = !turn;
     }
 
-    private int[] get_green_dest()
+    private int[] get_green_move()
     {
+        //int[0]= source, int[1]= dest
         int[] no_moves = new int[2] { -1, -1 };
         int[] green_stacks = new int[24];
         green_stacks = get_stacks('G');
@@ -564,6 +584,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         return no_moves;
 
     }
+
     private bool check_available_moves()
     {
         Debug.Log("<color=purple>check_available_moves()</color>");
@@ -669,4 +690,5 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
     }
     #endregion
+
 }

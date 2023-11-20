@@ -10,17 +10,6 @@ using UnityEngine.UIElements;
 using com.shephertz.app42.gaming.multiplayer.client.SimpleJSON;
 using Unity.VisualScripting;
 
-public class stringIntPair
-{
-    public string left;
-    public int right;
-
-    public stringIntPair(string left, int right)
-    {
-        this.left = left;
-        this.right = right;
-    }
-}
 
 public class SC_Board : MonoBehaviour
 {
@@ -28,12 +17,14 @@ public class SC_Board : MonoBehaviour
     public static Turn_Handler Turn;
     public delegate void SinglePlayer_Handler();
     public static SinglePlayer_Handler play_singleplayer;
-    public Dictionary<string, int> flags;
+    public delegate void Play_other_player_hanler (int[] source, int[] dest);
+    public static Play_other_player_hanler play_other_player;
 
     //public SC_BackgamoonConnect backgamoon_connect;
     GameObject Sprite_x;
     GameObject camera;
     GameObject[] DiceRoller = new GameObject[2];
+    public Dictionary<string, int> flags;
     int[] curr_dice;
     bool turn;//true= orange turn
     bool is_my_turn;
@@ -183,7 +174,7 @@ public class SC_Board : MonoBehaviour
             {
                 string moves_string = MiniJSON.Json.Serialize(data["moves"]);
 
-                /******************** convert string to arrays **************************/
+                /******************** convert string to int[] ****************************/
                 moves_string = moves_string.Replace("{", "").Replace("}", "").Replace("\"", "");
                 string[] parts = moves_string.Split(':');
                 int[] source_data = ExtractIntArray(parts[0]);
@@ -191,6 +182,12 @@ public class SC_Board : MonoBehaviour
                 /************************************************************************/
                 Debug.Log("First Array: " + string.Join(",", source_data));
                 Debug.Log("Second Array: " + string.Join(",", dest_data));
+                if (flags["did_play_other"] == 0)
+                {
+                    play_other_player(source_data, dest_data);
+                    flags["did_play_other"] = 1;
+                }
+
             }
         }
     }
@@ -229,7 +226,7 @@ public class SC_Board : MonoBehaviour
     }
 
     /*******************************************************************************************************/
-    #endregion
+
     private void init_flags()
     {
         flags.Add("turn_stage", 0);
@@ -238,12 +235,15 @@ public class SC_Board : MonoBehaviour
         flags.Add("Ocaptures", 0);
         flags.Add("Gendgame", 0);
         flags.Add("Oendgame", 0);
+        flags.Add("did_play_other", 0);
+
     }
 
     private void zero_flags()
     {
         flags["double"] = 0;
         flags["turn_stage"] = 0;
+        flags["did_play_other"] = 0;
     }
 
     private void init_dice()
@@ -294,19 +294,9 @@ public class SC_Board : MonoBehaviour
 
     private void rotate_camera()
     {
-        if (multiplayer)
-            StartCoroutine(CR_rotate_camera());
-    }
-
-    IEnumerator CR_rotate_camera()
-    {
-        yield return new WaitForSeconds(1);
-        Vector3 rotation;
-        if (turn)
-            rotation = new Vector3(0, 0, 0);
-        else
+            Vector3 rotation;
             rotation = new Vector3(0, 0, 180);
-        camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
+            camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
     }
 
     private void is_game_finish()
@@ -333,4 +323,6 @@ public class SC_Board : MonoBehaviour
 
         return result;
     }
+    #endregion
+
 }

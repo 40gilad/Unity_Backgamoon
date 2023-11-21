@@ -107,7 +107,10 @@ public class SC_Board : MonoBehaviour
         curr_dice[0] = left;
         curr_dice[1] = right;
         if (curr_dice[0] == curr_dice[1])
+        {
+            Debug.Log("1. got double!! " + curr_dice[0] + "," + curr_dice[1]);
             flags["double"] = 1;
+        }
         //add double celebration?
         send_dice(left, right);
     }
@@ -183,7 +186,10 @@ public class SC_Board : MonoBehaviour
             }
             else if (data.ContainsKey("moves"))
             {
-                string moves_string = MiniJSON.Json.Serialize(data["moves"]);
+                if (flags["did_play_other"] == 0)
+                {
+
+                    string moves_string = MiniJSON.Json.Serialize(data["moves"]);
 
                 /******************** convert string to int[] ****************************/
                 moves_string = moves_string.Replace("{", "").Replace("}", "").Replace("\"", "");
@@ -193,8 +199,7 @@ public class SC_Board : MonoBehaviour
                 /************************************************************************/
                 Debug.Log("First Array: " + string.Join(",", source_data));
                 Debug.Log("Second Array: " + string.Join(",", dest_data));
-                if (flags["did_play_other"] == 0)
-                {
+
                     play_other_player(source_data, dest_data);
                     flags["did_play_other"] = 1;
                 }
@@ -217,8 +222,11 @@ public class SC_Board : MonoBehaviour
 
     private void send_data(string data)
     {
-        Debug.Log("changing turn");
-        WarpClient.GetInstance().sendMove(data);
+        if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
+        {
+            Debug.Log("changing turn");
+            WarpClient.GetInstance().sendMove(data);
+        }
     }
     private void send_data()
     {
@@ -228,17 +236,23 @@ public class SC_Board : MonoBehaviour
     }
     public void send_data(Dictionary<string, Dictionary<string, int>> data)
     {
-        Debug.Log("sending dice");
-        string jsonData = MiniJSON.Json.Serialize(data);
-        Debug.Log(jsonData);
-        WarpClient.GetInstance().sendMove(jsonData);
+        if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
+        {
+            Debug.Log("sending dice");
+            string jsonData = MiniJSON.Json.Serialize(data);
+            Debug.Log(jsonData);
+            WarpClient.GetInstance().sendMove(jsonData);
+        }
     }
     public void send_data(Dictionary<string, Dictionary<string, string>> data)
     {
-        Debug.Log("changing move");
-        string jsonData = MiniJSON.Json.Serialize(data);
-        Debug.Log(jsonData);
-        WarpClient.GetInstance().sendMove(jsonData);
+        if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
+        {
+            Debug.Log("changing move");
+            string jsonData = MiniJSON.Json.Serialize(data);
+            Debug.Log(jsonData);
+            WarpClient.GetInstance().sendMove(jsonData);
+        }
     }
 
     /*******************************************************************************************************/
@@ -257,6 +271,7 @@ public class SC_Board : MonoBehaviour
 
     private void zero_flags()
     {
+        Debug.Log("zero flags");
         flags["double"] = 0;
         flags["turn_stage"] = 0;
         flags["did_play_other"] = 0;

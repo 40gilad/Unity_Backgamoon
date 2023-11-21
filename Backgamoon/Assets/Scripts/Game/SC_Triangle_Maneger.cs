@@ -121,13 +121,18 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private void play_other_player(int[] source, int[] dest)
     {
+        if (curr_dice[0] == curr_dice[1])
+        {
+            Debug.Log("2. got double!! " + curr_dice[0] + "," + curr_dice[1]);
+            board.flags["double"] = 1;
+        }
         Debug.Log("turn= " + turn);
         for (int i = 0; i < 4; i++)
         {
-            if (curr_dice[0] == curr_dice[1])
-                board.flags["double"] = 1;
             if (source[i] != -2)
             {
+                Debug.Log("i= " + i);
+                Debug.Log("Playing " + source[i] + " -> " + dest[i]);
                 /*
                 get_triangle_script("Triangle" + source[i]).pop_piece();
                 push_piece("Triangle" + dest[i]);
@@ -138,7 +143,9 @@ public class SC_Triangle_Maneger : MonoBehaviour
                 pressed_triangle("Triangle" + source[i]);
                 board.flags["turn_stage"] = 2;
                 pressed_triangle("Triangle" + dest[i]);
-                
+                StartCoroutine(CR_wait_frame());
+
+
             }
         }
 

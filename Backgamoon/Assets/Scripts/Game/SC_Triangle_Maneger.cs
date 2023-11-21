@@ -31,7 +31,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     int turn_moves;
     int direction_accelerator = 0;
     SC_Board board;
-    int[] curr_dice;
+    public int[] curr_dice;
     int source_triangle;
     int[] dest_triangles;
     public GameObject orange_piece;
@@ -96,8 +96,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
     }
 
     void pressed_triangle(string name)
-    {
-        int x = 1;
+    {      
         if (get_triangle_number(name) == source_triangle)
         {
             Debug.Log("<color=red>repressed, cancele the press</color>");
@@ -122,17 +121,24 @@ public class SC_Triangle_Maneger : MonoBehaviour
 
     private void play_other_player(int[] source, int[] dest)
     {
+        Debug.Log("turn= " + turn);
         for (int i = 0; i < 4; i++)
         {
+            if (curr_dice[0] == curr_dice[1])
+                board.flags["double"] = 1;
             if (source[i] != -2)
             {
+                /*
                 get_triangle_script("Triangle" + source[i]).pop_piece();
                 push_piece("Triangle" + dest[i]);
                 source[i] = -2;
-                /*
-                pressed_triangle("Triangle" + source[i]);
-                pressed_triangle(dest[i]);
                 */
+                
+                board.flags["turn_stage"] = 1;
+                pressed_triangle("Triangle" + source[i]);
+                board.flags["turn_stage"] = 2;
+                pressed_triangle("Triangle" + dest[i]);
+                
             }
         }
 
@@ -688,6 +694,12 @@ public class SC_Triangle_Maneger : MonoBehaviour
         {
 
         }
+    }
+
+    public void set_curr_dice(int left,int right)
+    {
+        curr_dice[0] = left;
+        curr_dice[1]=right;
     }
     #endregion
 

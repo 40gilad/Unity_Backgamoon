@@ -32,6 +32,8 @@ public class SC_Board : MonoBehaviour
     private float startTime;
     public bool multiplayer;
     private SC_DicePair dice_maneger = null;
+    public SC_Triangle_Maneger Triangle_Maneger;
+    private string finish_turn_str = "finish turn";
 
     #region README
     /************************************************************************************************/
@@ -115,6 +117,7 @@ public class SC_Board : MonoBehaviour
     {
         is_game_finish();
         ChangeTurn();
+        send_data(finish_turn_str);
     }
 
     private void finish_game(char color)
@@ -150,7 +153,12 @@ public class SC_Board : MonoBehaviour
     private void OnMoveCompleted(MoveEvent _Move)
     {
         Debug.Log("Got data from other player: " + _Move.getMoveData());
-        if(_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == string.Empty)
+        if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == finish_turn_str)
+        {
+            Debug.Log("other sent finish turn");
+            ChangeTurn();
+        }
+            if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == string.Empty)
         {
             Debug.Log("got null from other player");
             return;
@@ -168,7 +176,10 @@ public class SC_Board : MonoBehaviour
                 int rightDiceValue = int.Parse(diceData["right"].ToString());
 
                 dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
-                send_data();
+                Triangle_Maneger.curr_dice[0]=curr_dice[0] = leftDiceValue;
+                Triangle_Maneger.curr_dice[1]=curr_dice[1] = rightDiceValue;
+                
+                send_data();//sends to return the turn to continue
             }
             else if (data.ContainsKey("moves"))
             {
@@ -204,7 +215,11 @@ public class SC_Board : MonoBehaviour
 
     /***************************************** send_data overloads *****************************************/
 
-
+    private void send_data(string data)
+    {
+        Debug.Log("changing turn");
+        WarpClient.GetInstance().sendMove(data);
+    }
     private void send_data()
     {
         //sends null to keep turn to the right player after sending dice
@@ -213,13 +228,14 @@ public class SC_Board : MonoBehaviour
     }
     public void send_data(Dictionary<string, Dictionary<string, int>> data)
     {
+        Debug.Log("sending dice");
         string jsonData = MiniJSON.Json.Serialize(data);
         Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);
     }
     public void send_data(Dictionary<string, Dictionary<string, string>> data)
     {
-
+        Debug.Log("changing move");
         string jsonData = MiniJSON.Json.Serialize(data);
         Debug.Log(jsonData);
         WarpClient.GetInstance().sendMove(jsonData);

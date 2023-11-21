@@ -1939,6 +1939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44557bcee8a92d4db8d48b906df009b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curr_dice: 
   orange_piece: {fileID: 5681424378251630142, guid: f2332b03c32179c49bee3a268e6de0e3,
     type: 3}
   green_piece: {fileID: 1315777898125530505, guid: 0ffd83abff4d8fe40882a4c0ce509438,
@@ -5247,6 +5248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   multiplayer: 1
+  Triangle_Maneger: {fileID: 739208477}
 --- !u!1 &1566233996 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3539006831511702230, guid: 76b923253ea80ae4e870a509e7f55d7f,

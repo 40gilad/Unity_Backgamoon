@@ -685,9 +685,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
         }
     }
 
-    public IEnumerator CR_wait_frame()
+    public IEnumerator CR_wait_frame(int frames=1)
     {
-        yield return null;
+        while (frames > 0)
+        {
+            Debug.Log("waiting frame " + frames);
+            yield return null;
+            frames--;
+        }
     }
 
     private void endgame_press(string name)

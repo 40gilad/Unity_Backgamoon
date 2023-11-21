@@ -2268,7 +2268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007b6ad510b03f14981333c70f583c94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stack_color: 0
+  stack_color: 52
   top: 0
 --- !u!1 &817210610
 GameObject:

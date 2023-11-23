@@ -26,6 +26,7 @@ public class SC_Board : MonoBehaviour
     GameObject[] DiceRoller = new GameObject[2];
     public Dictionary<string, int> flags;
     int[] curr_dice;
+    int[] dice_to_send;
     bool turn;//true= orange turn
     bool is_my_turn;
     private string nextTurn;
@@ -67,6 +68,7 @@ public class SC_Board : MonoBehaviour
        dice_maneger=GameObject.Find("Sprite_RightDicePair").GetComponent<SC_DicePair>();
        flags= new Dictionary<string, int>();
        curr_dice = new int[2];
+       dice_to_send= new int[2];
        Sprite_x = GameObject.Find("Sprite_X");
     }
 
@@ -112,7 +114,8 @@ public class SC_Board : MonoBehaviour
             flags["double"] = 1;
         }
         //add double celebration?
-        send_dice(left, right);
+        dice_to_send[0] = curr_dice[0];
+        dice_to_send[1] = curr_dice[1];
     }
 
 
@@ -120,7 +123,6 @@ public class SC_Board : MonoBehaviour
     {
         is_game_finish();
         ChangeTurn();
-        send_data(finish_turn_str);
     }
 
     private void finish_game(char color)
@@ -156,16 +158,7 @@ public class SC_Board : MonoBehaviour
     private void OnMoveCompleted(MoveEvent _Move)
     {
         Debug.Log("Got data from other player: " + _Move.getMoveData());
-        if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == finish_turn_str)
-        {
-            Debug.Log("other sent finish turn");
-            ChangeTurn();
-        }
-        if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == string.Empty)
-        {
-            Debug.Log("got null from other player");
-            return;
-        }
+
         if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() != null) // other player sent and it's not null
         {
             Dictionary<string, object> data = (Dictionary<string, object>)MiniJSON.Json.Deserialize(_Move.getMoveData());
@@ -174,19 +167,17 @@ public class SC_Board : MonoBehaviour
                 if (data.ContainsKey("dice"))
                 {
                     // Extract the "dice" dictionary from the JSON data
-                    Dictionary<string, object> diceData = (Dictionary<string, object>)data["dice"];
-
-                    // Get the left and right dice values
-                    int leftDiceValue = int.Parse(diceData["left"].ToString());
-                    int rightDiceValue = int.Parse(diceData["right"].ToString());
-
+                    string diceData = MiniJSON.Json.Serialize(data["dice"]);
+                    diceData = diceData.Replace("{", "").Replace("}", "").Replace("\"", "");
+                    string[] parts = diceData.Split(':');
+                    int leftDiceValue = int.Parse(parts[0]);
+                    int rightDiceValue = int.Parse(parts[1]);
                     dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
-                    Triangle_Maneger.curr_dice[0] = curr_dice[0] = leftDiceValue;
-                    Triangle_Maneger.curr_dice[1] = curr_dice[1] = rightDiceValue;
 
-                    send_data();//sends to return the turn to continue
+
+
                 }
-                else if (data.ContainsKey("moves"))
+                if (data.ContainsKey("moves"))
                 {
                     if (flags["did_play_other"] == 0)
                     {
@@ -211,44 +202,13 @@ public class SC_Board : MonoBehaviour
         }
     }
 
-    void send_dice(int left, int right)
-    {
-        Dictionary<string, Dictionary<string, int>> dice_to_send
-            = new Dictionary<string, Dictionary<string, int>>();
-        dice_to_send.Add("dice", new Dictionary<string, int>());
-        dice_to_send["dice"].Add("left", left);
-        dice_to_send["dice"].Add("right", right);
-        send_data(dice_to_send);
-    }
 
     /***************************************** send_data overloads *****************************************/
 
-    private void send_data(string data)
-    {
-        if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
-        {
-            Debug.Log("changing turn");
-            WarpClient.GetInstance().sendMove(data);
-        }
-    }
-    private void send_data()
-    {
-        //sends null to keep turn to the right player after sending dice
-        Debug.Log("sending null data");
-        WarpClient.GetInstance().sendMove(string.Empty);
-    }
-    public void send_data(Dictionary<string, Dictionary<string, int>> data)
-    {
-        if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
-        {
-            Debug.Log("sending dice");
-            string jsonData = MiniJSON.Json.Serialize(data);
-            Debug.Log(jsonData);
-            WarpClient.GetInstance().sendMove(jsonData);
-        }
-    }
     public void send_data(Dictionary<string, Dictionary<string, string>> data)
     {
+        data.Add("dice", new Dictionary<string, string>());
+        data["dice"].Add(dice_to_send[0].ToString(), dice_to_send[1].ToString());
         if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
         {
             Debug.Log("changing move");

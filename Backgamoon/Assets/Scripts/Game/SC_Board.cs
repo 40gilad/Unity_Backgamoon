@@ -161,7 +161,7 @@ public class SC_Board : MonoBehaviour
             Debug.Log("other sent finish turn");
             ChangeTurn();
         }
-            if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == string.Empty)
+        if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() == string.Empty)
         {
             Debug.Log("got null from other player");
             return;
@@ -169,41 +169,44 @@ public class SC_Board : MonoBehaviour
         if (_Move.getSender() != GlobalVars.userId && _Move.getMoveData() != null) // other player sent and it's not null
         {
             Dictionary<string, object> data = (Dictionary<string, object>)MiniJSON.Json.Deserialize(_Move.getMoveData());
-            if (data.ContainsKey("dice"))
+            if (data != null)
             {
-                // Extract the "dice" dictionary from the JSON data
-                Dictionary<string, object> diceData = (Dictionary<string, object>)data["dice"];
-
-                // Get the left and right dice values
-                int leftDiceValue = int.Parse(diceData["left"].ToString());
-                int rightDiceValue = int.Parse(diceData["right"].ToString());
-
-                dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
-                Triangle_Maneger.curr_dice[0]=curr_dice[0] = leftDiceValue;
-                Triangle_Maneger.curr_dice[1]=curr_dice[1] = rightDiceValue;
-                
-                send_data();//sends to return the turn to continue
-            }
-            else if (data.ContainsKey("moves"))
-            {
-                if (flags["did_play_other"] == 0)
+                if (data.ContainsKey("dice"))
                 {
+                    // Extract the "dice" dictionary from the JSON data
+                    Dictionary<string, object> diceData = (Dictionary<string, object>)data["dice"];
 
-                    string moves_string = MiniJSON.Json.Serialize(data["moves"]);
+                    // Get the left and right dice values
+                    int leftDiceValue = int.Parse(diceData["left"].ToString());
+                    int rightDiceValue = int.Parse(diceData["right"].ToString());
 
-                /******************** convert string to int[] ****************************/
-                moves_string = moves_string.Replace("{", "").Replace("}", "").Replace("\"", "");
-                string[] parts = moves_string.Split(':');
-                int[] source_data = ExtractIntArray(parts[0]);
-                int[] dest_data = ExtractIntArray(parts[1]);
-                /************************************************************************/
-                Debug.Log("First Array: " + string.Join(",", source_data));
-                Debug.Log("Second Array: " + string.Join(",", dest_data));
+                    dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
+                    Triangle_Maneger.curr_dice[0] = curr_dice[0] = leftDiceValue;
+                    Triangle_Maneger.curr_dice[1] = curr_dice[1] = rightDiceValue;
 
-                    play_other_player(source_data, dest_data);
-                    flags["did_play_other"] = 1;
+                    send_data();//sends to return the turn to continue
                 }
+                else if (data.ContainsKey("moves"))
+                {
+                    if (flags["did_play_other"] == 0)
+                    {
 
+                        string moves_string = MiniJSON.Json.Serialize(data["moves"]);
+
+                        /******************** convert string to int[] ****************************/
+                        moves_string = moves_string.Replace("{", "").Replace("}", "").Replace("\"", "");
+                        string[] parts = moves_string.Split(':');
+                        int[] source_data = ExtractIntArray(parts[0]);
+                        int[] dest_data = ExtractIntArray(parts[1]);
+                        /************************************************************************/
+                        Debug.Log("First Array: " + string.Join(",", source_data));
+                        Debug.Log("Second Array: " + string.Join(",", dest_data));
+
+                        play_other_player(source_data, dest_data);
+                        flags["did_play_other"] = 1;
+                    }
+
+                }
             }
         }
     }

@@ -6,7 +6,8 @@ using Unity.Loading;
 using UnityEngine;
 using UnityEngine.Apple;
 
-public class SC_Triangle_Maneger : MonoBehaviour
+
+    public class SC_Triangle_Maneger : MonoBehaviour
 {
     public delegate void Finish_Move_Handler();
     public static Finish_Move_Handler finish_turn;
@@ -129,22 +130,15 @@ public class SC_Triangle_Maneger : MonoBehaviour
         Debug.Log("turn= " + turn);
         for (int i = 0; i < 4; i++)
         {
+            Debug.Log("i= " + i);
+            Debug.Log("Playing " + source[i] + " -> " + dest[i]);
             if (source[i] != -2)
             {
-                Debug.Log("i= " + i);
-                Debug.Log("Playing " + source[i] + " -> " + dest[i]);
-                /*
-                get_triangle_script("Triangle" + source[i]).pop_piece();
-                push_piece("Triangle" + dest[i]);
-                source[i] = -2;
-                */
-                
+                Debug.Log("Moves a piece");
                 board.flags["turn_stage"] = 1;
                 pressed_triangle("Triangle" + source[i]);
                 board.flags["turn_stage"] = 2;
                 pressed_triangle("Triangle" + dest[i]);
-                StartCoroutine(CR_wait_frame());
-
 
             }
         }
@@ -265,6 +259,7 @@ public class SC_Triangle_Maneger : MonoBehaviour
         turn_moves++;
         end_move(dest_triangle);
         StartCoroutine(CR_check_available_moves());
+        Debug.Log("after corutine available moves");
 
     }
     #endregion
@@ -388,10 +383,14 @@ public class SC_Triangle_Maneger : MonoBehaviour
         if ((turn_moves == 4 && board.flags["double"] == 1)
             || (turn_moves == 2 && board.flags["double"] == 0))
         {
-            string Skey_source = string.Join(",", key_source);
-            string Sval_dest = string.Join(",", val_dest);
-            moves_to_send["moves"].Add(Skey_source, Sval_dest);
-            board.send_data(moves_to_send);
+            if (GlobalVars.orange == GlobalVars.userId && turn || GlobalVars.orange == GlobalVars.userId && !turn)
+            {
+
+                string Skey_source = string.Join(",", key_source);
+                string Sval_dest = string.Join(",", val_dest);
+                moves_to_send["moves"].Add(Skey_source, Sval_dest);
+                board.send_data(moves_to_send);
+            }
             init_vars();
             is_endgame();
             is_finish();

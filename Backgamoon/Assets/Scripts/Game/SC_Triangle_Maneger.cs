@@ -139,7 +139,7 @@ using UnityEngine.Apple;
                 pressed_triangle("Triangle" + source[i]);
                 board.flags["turn_stage"] = 2;
                 pressed_triangle("Triangle" + dest[i]);
-
+                StartCoroutine(CR_wait_frame());
             }
         }
 
@@ -383,7 +383,7 @@ using UnityEngine.Apple;
         if ((turn_moves == 4 && board.flags["double"] == 1)
             || (turn_moves == 2 && board.flags["double"] == 0))
         {
-            if (GlobalVars.orange == GlobalVars.userId && turn || GlobalVars.orange == GlobalVars.userId && !turn)
+            if (board.is_my_turn())
             {
 
                 string Skey_source = string.Join(",", key_source);
@@ -686,12 +686,8 @@ using UnityEngine.Apple;
 
     public IEnumerator CR_wait_frame(int frames=1)
     {
-        while (frames > 0)
-        {
+            yield return new WaitForEndOfFrame();
             Debug.Log("waiting frame " + frames);
-            yield return null;
-            frames--;
-        }
     }
 
     private void endgame_press(string name)

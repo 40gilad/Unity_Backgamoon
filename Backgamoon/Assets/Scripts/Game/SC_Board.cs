@@ -28,13 +28,12 @@ public class SC_Board : MonoBehaviour
     int[] curr_dice;
     int[] dice_to_send;
     bool turn;//true= orange turn
-    bool is_my_turn;
     private string nextTurn;
     private float startTime;
     public bool multiplayer;
     private SC_DicePair dice_maneger = null;
     public SC_Triangle_Maneger Triangle_Maneger;
-    private string finish_turn_str = "finish turn";
+    bool is_game_init;
 
     #region README
     /************************************************************************************************/
@@ -74,9 +73,12 @@ public class SC_Board : MonoBehaviour
 
     void Start()
     {
+        is_game_init = false;
         turn = false;
         init_flags();
         ChangeTurn();
+        is_game_init = true;
+
     }
 
     void OnEnable()
@@ -144,12 +146,15 @@ public class SC_Board : MonoBehaviour
             DiceRoller[1].SetActive(false);
             rotate_camera();
         }
+        manage_dice_rollers();
+        /*
         if (GlobalVars.userId == nextTurn)
         {
             is_my_turn = true;
         }
         else
             is_my_turn = false;
+        */
     }
     #endregion
 
@@ -173,6 +178,8 @@ public class SC_Board : MonoBehaviour
                     int leftDiceValue = int.Parse(parts[0]);
                     int rightDiceValue = int.Parse(parts[1]);
                     dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
+                    Triangle_Maneger.curr_dice[0] = leftDiceValue;
+                    Triangle_Maneger.curr_dice[1] = rightDiceValue;
 
 
 
@@ -209,7 +216,7 @@ public class SC_Board : MonoBehaviour
     {
         data.Add("dice", new Dictionary<string, string>());
         data["dice"].Add(dice_to_send[0].ToString(), dice_to_send[1].ToString());
-        if ((GlobalVars.orange == GlobalVars.userId && turn) || (GlobalVars.orange != GlobalVars.userId && !turn))
+        if (is_my_turn())
         {
             Debug.Log("changing move");
             string jsonData = MiniJSON.Json.Serialize(data);
@@ -273,8 +280,7 @@ public class SC_Board : MonoBehaviour
         zero_flags();
         init_dice();
 
-        DiceRoller[0].SetActive(!turn);
-        DiceRoller[1].SetActive(turn);
+        manage_dice_rollers();
 
         if(Sprite_x.activeSelf)
             Sprite_x.SetActive(false);
@@ -319,4 +325,22 @@ public class SC_Board : MonoBehaviour
     }
     #endregion
 
+    private void manage_dice_rollers()
+    {
+        if (is_my_turn() && is_game_init)
+        {
+            DiceRoller[0].SetActive(!turn);
+            DiceRoller[1].SetActive(turn);
+        }
+        else if (is_game_init)
+        {
+            DiceRoller[0].SetActive(false);
+            DiceRoller[1].SetActive(false);
+        }
+    }
+    public bool is_my_turn()
+    {
+        return (GlobalVars.orange == GlobalVars.userId && turn) || 
+            (GlobalVars.orange != GlobalVars.userId && !turn);
+    }
 }

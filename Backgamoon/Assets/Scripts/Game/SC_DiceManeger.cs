@@ -31,8 +31,7 @@ public class SC_DiceManeger : MonoBehaviour
 
     public void Roll()
     {
-        Roll_Dice(3, 1);
-        //Roll_Dice(Random.Range(1, 7), Random.Range(1, 7));
+        Roll_Dice(Random.Range(1, 7), Random.Range(1, 7));
         gameObject.SetActive(false);
     }
 

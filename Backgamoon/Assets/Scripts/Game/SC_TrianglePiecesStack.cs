@@ -44,6 +44,7 @@ public class SC_TrianglePiecesStack : MonoBehaviour
 
     public void pop_piece()
     {
+        StartCoroutine(update_stack_color());
         string piece_2_destroy;
         if (stack_color == 'O')
             piece_2_destroy = "OrangePiece" + top--;

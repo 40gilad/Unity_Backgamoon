@@ -117,7 +117,10 @@ using UnityEngine.Apple;
         curr_dice[0] = left;
         curr_dice[1] = right;
         if (!check_available_moves())
+        {
             no_available_moves();
+            board.send_data(moves_to_send);
+        }
     }
 
     private void play_other_player(int[] source, int[] dest)

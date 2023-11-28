@@ -267,8 +267,7 @@ public class SC_Board : MonoBehaviour
             Debug.Log("<color=orange>ORANGE TURN</color>");
         else if (!turn)
             Debug.Log("<color=green>GREEN TURN</color>");
-        if(psudo_multiplayer && !is_game_init)
-            rotate_camera();
+        rotate_camera();
         zero_flags();
         init_dice();
 
@@ -287,10 +286,25 @@ public class SC_Board : MonoBehaviour
     public void rotate_camera()
     {
         Vector3 rotation;
-        if (turn)
-            rotation = new Vector3(0, 0, 0);
+        if (multiplayer)
+        {
+            if (GlobalVars.orange == GlobalVars.userId)
+                rotation = new Vector3(0, 0, 0);
+            else if(GlobalVars.orange != GlobalVars.userId)
+                rotation = new Vector3(0, 0, 180);
+            else
+                rotation = new Vector3(0, 0, 0);
+
+        }
+        else if (psudo_multiplayer)
+        {
+            if (turn)
+                rotation = new Vector3(0, 0, 0);
+            else
+                rotation = new Vector3(0, 0, 180);
+        }
         else
-            rotation = new Vector3(0, 0, 180);
+            rotation = new Vector3(0, 0, 0);
         camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
     }
 

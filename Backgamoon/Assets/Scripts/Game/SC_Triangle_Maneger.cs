@@ -259,7 +259,7 @@ using UnityEngine.Apple;
             else if (!turn)
                 update_dice(source_triangle - dest_triangle);
         }
-        if (board.multiplayer)
+        if (board.multiplayer && board.is_my_turn())
         {
             Debug.Log("added source= " + source_triangle + " dest= " + dest_triangle);
             add_moves_to_dict(source_triangle, dest_triangle);

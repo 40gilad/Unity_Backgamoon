@@ -83,4 +83,10 @@ public class SC_MenuController : MonoBehaviour
         if (CurrMenuLogic != null)
             CurrMenuLogic.Btn_Logic("MutiPlay");
     }
+    public void Btn_PlayPsudoMulti()
+    {
+        Debug.Log("Btn_PlayPsudoMulti");
+        if (CurrMenuLogic != null)
+            CurrMenuLogic.Btn_Logic("PsudoPlay");
+    }
 }

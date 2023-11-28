@@ -333,19 +333,20 @@ public class SC_MenuLogic : MonoBehaviour
         ScreenStack.Push(Curr_Screen);
         Curr_Screen.SetActive(false);
         if (Screen_Name != "Screen_Singleplayer" 
-            && Screen_Name!= "MutiPlay")
+            && Screen_Name!= "MutiPlay"
+            && Screen_Name!= "PsudoPlay")
         {
             Curr_Screen = Screen[Screen_Name];
             Curr_Screen.SetActive(true);
         }
         else
         {
+            unityObjects["Img_LoadingBack"].SetActive(false);
             switch (Screen_Name)
             {
                 case ("Screen_Singleplayer"):
                     Curr_Screen = Screen["Screen_Game"];
                     Curr_Screen.SetActive(true);
-                    unityObjects["Img_LoadingBack"].SetActive(false);
                     board.psudo_multiplayer = false;
                     board.multiplayer = false;
                     board.rotate_camera();
@@ -354,12 +355,16 @@ public class SC_MenuLogic : MonoBehaviour
                 case ("MutiPlay"):
                     Curr_Screen = unityObjects["Canvas_Multiplayer"];
                     Curr_Screen.SetActive(true);
-                    unityObjects["Img_LoadingBack"].SetActive(false);
                     board.psudo_multiplayer = false;
                     board.multiplayer = true;
                     connectServer();
                     break;
-                    
+                case ("PsudoPlay"):
+                    Curr_Screen = Screen["Screen_Game"];
+                    Curr_Screen.SetActive(true);
+                    board.psudo_multiplayer = true;
+                    board.multiplayer = false;
+                    break;
                 default:
                     Curr_Screen = Screen["Screen_MainMenu"];
                     Curr_Screen.SetActive(true);

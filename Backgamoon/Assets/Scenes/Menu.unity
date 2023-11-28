@@ -3441,6 +3441,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1031287387311577855, guid: 7c4c6bb03f7c7fd45934ebb955005525,
+        type: 3}
+      propertyPath: m_text
+      value: 'Name: Gilad Meir
+
+        Id: 313416562
+
+        Department: Soft.Engineering
+
+        Submit
+        Date: 30.11.2023'
+      objectReference: {fileID: 0}
     - target: {fileID: 1285893819379943551, guid: 7c4c6bb03f7c7fd45934ebb955005525,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

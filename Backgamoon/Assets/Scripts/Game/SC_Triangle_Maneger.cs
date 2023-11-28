@@ -119,7 +119,8 @@ using UnityEngine.Apple;
         if (!check_available_moves())
         {
             no_available_moves();
-            board.send_data(moves_to_send);
+            if(board.multiplayer)
+                board.send_data(moves_to_send);
         }
     }
 
@@ -220,9 +221,10 @@ using UnityEngine.Apple;
                 {//takes out smaller triangle than cube. check if there are greater triangles
                     for (int i = FIRST_O_TRIANGLE; i < source_triangle; i++)
                     {
-                        if (!get_triangle_script("Triangle" + i).is_stack_empty())
-                        {
-                            //move illeagle
+                        SC_Triangle curr = get_triangle_script("Triangle" + i);
+                        if (!curr.is_stack_empty() && curr.get_stack_color()=='O')
+                        { 
+                            //stacks from larger triangles arnt empty with own color. illeagel
                             end_move(-1);
                             return;
                         }
@@ -238,9 +240,10 @@ using UnityEngine.Apple;
                 {//takes out smaller triangle than cube. check if there are greater triangles
                     for (int i = FIRST_G_TRIANGLE; i > source_triangle; i--)
                     {
-                        if (!get_triangle_script("Triangle" + i).is_stack_empty())
+                        SC_Triangle curr = get_triangle_script("Triangle" + i);
+                        if (!curr.is_stack_empty() && curr.get_stack_color()=='G')
                         {
-                            //move illeagle
+                            //stacks from larger triangles arnt empty with own color. illeagel
                             end_move(-1);
                             return;
                         }
@@ -256,13 +259,15 @@ using UnityEngine.Apple;
             else if (!turn)
                 update_dice(source_triangle - dest_triangle);
         }
-        Debug.Log("added source= " + source_triangle + " dest= " + dest_triangle);
-        add_moves_to_dict(source_triangle, dest_triangle);
+        if (board.multiplayer)
+        {
+            Debug.Log("added source= " + source_triangle + " dest= " + dest_triangle);
+            add_moves_to_dict(source_triangle, dest_triangle);
+        }
         turn_off_dest_triangles();
         turn_moves++;
         end_move(dest_triangle);
         StartCoroutine(CR_check_available_moves());
-        Debug.Log("after corutine available moves");
 
     }
     #endregion
@@ -335,15 +340,15 @@ using UnityEngine.Apple;
 
     private void init_triangles_dict()
     {
-        Debug.Log("init_triangles_dict");
-        string currname;
-        for (int i = -1; i < TRIANGLES_AMOUNT; i++)
-        {
-            currname = "Triangle" + i;
-            GameObject curr = GameObject.Find(currname);
-            Triangles.Add(currname, GameObject.Find(currname));
-            get_triangle_script(currname).change_sprite_stat();
-        }
+            Debug.Log("init_triangles_dict");
+            string currname;
+            for (int i = -1; i < TRIANGLES_AMOUNT; i++)
+            {
+                currname = "Triangle" + i;
+                GameObject curr = GameObject.Find(currname);
+                Triangles.Add(currname, GameObject.Find(currname));
+                get_triangle_script(currname).change_sprite_stat();
+            }
     }
 
     SC_Triangle get_triangle_script(string name)
@@ -383,12 +388,11 @@ using UnityEngine.Apple;
     {
         StartCoroutine(CR_wait_frame());
         Debug.Log("end_move " + triangle_number);
-        if ((turn_moves == 4 && board.flags["double"] == 1)
+        if ((turn_moves >= 4 && board.flags["double"] == 1)
             || (turn_moves == 2 && board.flags["double"] == 0))
         {
-            if (board.is_my_turn())
+            if (board.is_my_turn() && board.multiplayer)
             {
-
                 string Skey_source = string.Join(",", key_source);
                 string Sval_dest = string.Join(",", val_dest);
                 moves_to_send["moves"].Add(Skey_source, Sval_dest);
@@ -523,7 +527,8 @@ using UnityEngine.Apple;
         turn_off_dest_triangles();
         dest_triangles[0] = -2;
         dest_triangles[1] = -2;
-        init_moves_dict();
+        if(board.multiplayer)
+            init_moves_dict();
     }
 
     private void init_moves_dict()

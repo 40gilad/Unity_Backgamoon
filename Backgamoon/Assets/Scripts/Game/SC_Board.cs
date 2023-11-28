@@ -31,6 +31,7 @@ public class SC_Board : MonoBehaviour
     private string nextTurn;
     private float startTime;
     public bool multiplayer;
+    public bool psudo_multiplayer;
     private SC_DicePair dice_maneger = null;
     public SC_Triangle_Maneger Triangle_Maneger;
     bool is_game_init;
@@ -63,11 +64,13 @@ public class SC_Board : MonoBehaviour
     {
        DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
        DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
-       camera = GameObject.Find("Main Camera");
+       if(multiplayer || psudo_multiplayer)
+            camera = GameObject.Find("Main Camera");
+       if(multiplayer)
+            dice_to_send= new int[2];
        dice_maneger=GameObject.Find("Sprite_RightDicePair").GetComponent<SC_DicePair>();
        flags= new Dictionary<string, int>();
        curr_dice = new int[2];
-       dice_to_send= new int[2];
        Sprite_x = GameObject.Find("Sprite_X");
     }
 
@@ -111,13 +114,12 @@ public class SC_Board : MonoBehaviour
         curr_dice[0] = left;
         curr_dice[1] = right;
         if (curr_dice[0] == curr_dice[1])
-        {
-            Debug.Log("1. got double!! " + curr_dice[0] + "," + curr_dice[1]);
             flags["double"] = 1;
+        if (multiplayer)
+        {
+            dice_to_send[0] = curr_dice[0];
+            dice_to_send[1] = curr_dice[1];
         }
-        //add double celebration?
-        dice_to_send[0] = curr_dice[0];
-        dice_to_send[1] = curr_dice[1];
     }
 
 
@@ -130,9 +132,9 @@ public class SC_Board : MonoBehaviour
     private void finish_game(char color)
     {
         if (color == 'O')
-            Debug.Log("<color=orange>ORANGE WON!!</color>");
+            Debug.Log("<color=orange>display: ORANGE WON!!</color>");
         if(color=='G')
-            Debug.Log("<color=green>GREEN WON!!</color>");
+            Debug.Log("<color=green>display: GREEN WON!!</color>");
     }
 
     public void StartGame(string _NextTurn)
@@ -141,20 +143,12 @@ public class SC_Board : MonoBehaviour
         nextTurn = _NextTurn;
         startTime = Time.time;
 
-        if (GlobalVars.orange != GlobalVars.userId)
+        if (GlobalVars.orange != GlobalVars.userId && multiplayer)
         {
             DiceRoller[1].SetActive(false);
             rotate_camera();
         }
         manage_dice_rollers();
-        /*
-        if (GlobalVars.userId == nextTurn)
-        {
-            is_my_turn = true;
-        }
-        else
-            is_my_turn = false;
-        */
     }
     #endregion
 
@@ -273,10 +267,8 @@ public class SC_Board : MonoBehaviour
             Debug.Log("<color=orange>ORANGE TURN</color>");
         else if (!turn)
             Debug.Log("<color=green>GREEN TURN</color>");
-        /*
-        if(multiplayer)
+        if(psudo_multiplayer && !is_game_init)
             rotate_camera();
-        */
         zero_flags();
         init_dice();
 
@@ -285,18 +277,21 @@ public class SC_Board : MonoBehaviour
         if(Sprite_x.activeSelf)
             Sprite_x.SetActive(false);
         Turn(turn);
-        if (!turn && !multiplayer)
+        if (!turn && !multiplayer && !psudo_multiplayer)
         {
             DiceRoller[0].GetComponent<SC_DiceManeger>().Roll();
             play_singleplayer();
         }
     }
 
-    private void rotate_camera()
+    public void rotate_camera()
     {
-            Vector3 rotation;
+        Vector3 rotation;
+        if (turn)
+            rotation = new Vector3(0, 0, 0);
+        else
             rotation = new Vector3(0, 0, 180);
-            camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
+        camera.GetComponent<Transform>().localRotation = Quaternion.Euler(rotation);
     }
 
     private void is_game_finish()
@@ -327,16 +322,17 @@ public class SC_Board : MonoBehaviour
 
     private void manage_dice_rollers()
     {
-        if (is_my_turn() && is_game_init)
-        {
-            DiceRoller[0].SetActive(!turn);
-            DiceRoller[1].SetActive(turn);
-        }
-        else if (is_game_init)
+        if (multiplayer && !is_my_turn() && is_game_init)
         {
             DiceRoller[0].SetActive(false);
             DiceRoller[1].SetActive(false);
         }
+        else if (is_game_init)
+        {
+            DiceRoller[0].SetActive(!turn);
+            DiceRoller[1].SetActive(turn);
+        }
+
     }
     public bool is_my_turn()
     {

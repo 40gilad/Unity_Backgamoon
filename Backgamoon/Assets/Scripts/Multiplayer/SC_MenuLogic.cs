@@ -25,10 +25,13 @@ public class SC_MenuLogic : MonoBehaviour
     int connectionTrys = 0;
     int createRoomTrys = 0;
     int joinRoomTrys = 0;
+    int multiplayer_volume=0;
 
     public GameObject Curr_Screen;
     private Dictionary<string, GameObject> Screen;
     Stack<GameObject> ScreenStack;
+    SC_Board board;
+
 
     #region Singleton
 
@@ -127,7 +130,8 @@ public class SC_MenuLogic : MonoBehaviour
 
     private void CreateRoom()
     {
-
+        Debug.Log("Passord will be: Shenkar202" + multiplayer_volume.ToString());
+        passedParams["Password"] = "Shenkar202" + multiplayer_volume.ToString();
         createRoomTrys++;
         UpdateStatus("Creating Room...");
         WarpClient.GetInstance().CreateTurnRoom(
@@ -142,10 +146,10 @@ public class SC_MenuLogic : MonoBehaviour
     #endregion
     private IEnumerator CR_InitAwake()
     {
+        board=GameObject.Find("Board").GetComponent<SC_Board>();
         yield return StartCoroutine(init_objects_dict());
         passedParams = new Dictionary<string, object>()
         {{"Password","Shenkar2023"}};
-
 
         if (listner == null)
             listner = new Listener();
@@ -228,8 +232,6 @@ public class SC_MenuLogic : MonoBehaviour
             foreach (var RoomData in eventObj.getRoomsData())
             {
                 Debug.Log("Room Id: " + RoomData.getId());
-                if (RoomData.getId() == "964863609")
-                    continue;
                 Debug.Log("Room Owner: " + RoomData.getRoomOwner());
                 roomIds.Add(RoomData.getId());
             }
@@ -293,7 +295,9 @@ public class SC_MenuLogic : MonoBehaviour
         Debug.Log("OnGetLiveRoomInfo , room owner= "+ GlobalVars.orange);
         UpdateStatus("OnGetLiveRoomInfo Recieved room data");
         Dictionary<string, object> room_prop = eventObj.getProperties();
+        passedParams["Password"] = "Shenkar202" + multiplayer_volume.ToString();
         string curr_pass = passedParams["Password"].ToString();
+        Debug.Log("curr_pass= " + curr_pass);
         if (eventObj != null && room_prop != null
             && (room_prop.ContainsKey("Password") && curr_pass == room_prop["Password"].ToString()))
         {
@@ -312,8 +316,8 @@ public class SC_MenuLogic : MonoBehaviour
     {
         Debug.Log("SC_MenuLogic: OnGameStarted Orange= " + GlobalVars.orange + " MyId= " + GlobalVars.userId);
         UpdateStatus("Game Started! Turn: "+ _NextTurn);
-        unityObjects["Screen_Menu"].SetActive(false);
-        unityObjects["Screen_Game"].SetActive(true);
+        unityObjects["Screen_Multiplayer"].SetActive(false);
+        Screen["Screen_Game"].SetActive(true);
         Debug.Log("Screen Game on");
         unityObjects["Board"].GetComponent<SC_Board>().StartGame(_NextTurn);
     }
@@ -326,29 +330,39 @@ public class SC_MenuLogic : MonoBehaviour
     {
         Debug.Log("Curr_Screen=(" + Curr_Screen.name + ")");
         Debug.Log("Btn_Logic(" + Screen_Name + ")");
-        if (Screen_Name != "Screen_Singleplayer")
+        ScreenStack.Push(Curr_Screen);
+        Curr_Screen.SetActive(false);
+        if (Screen_Name != "Screen_Singleplayer" 
+            && Screen_Name!= "MutiPlay")
         {
-            ScreenStack.Push(Curr_Screen);
-            Curr_Screen.SetActive(false);
             Curr_Screen = Screen[Screen_Name];
             Curr_Screen.SetActive(true);
         }
         else
         {
-            switch(Screen_Name)
+            switch (Screen_Name)
             {
                 case ("Screen_Singleplayer"):
-                    ScreenStack.Push(Curr_Screen);
-                    Curr_Screen.SetActive(false);
                     Curr_Screen = Screen["Screen_Game"];
                     Curr_Screen.SetActive(true);
                     unityObjects["Img_LoadingBack"].SetActive(false);
-                    SC_Board board = GameObject.Find("Board").GetComponent<SC_Board>();
                     board.psudo_multiplayer = false;
                     board.multiplayer = false;
                     board.rotate_camera();
-                        break;
+                    break;
+                    
+                case ("MutiPlay"):
+                    Curr_Screen = unityObjects["Canvas_Multiplayer"];
+                    Curr_Screen.SetActive(true);
+                    unityObjects["Img_LoadingBack"].SetActive(false);
+                    board.psudo_multiplayer = false;
+                    board.multiplayer = true;
+                    connectServer();
+                    break;
+                    
                 default:
+                    Curr_Screen = Screen["Screen_MainMenu"];
+                    Curr_Screen.SetActive(true);
                     break;
 
             }
@@ -373,8 +387,8 @@ public class SC_MenuLogic : MonoBehaviour
     {
         GameObject Vol = GameObject.Find("Volume");
         GameObject Vol_Val_Slider = GameObject.Find("Txt_Vol_Val");
+        multiplayer_volume = int.Parse(Vol.GetComponent<Slider>().value.ToString());
         Vol_Val_Slider.GetComponent<TextMeshProUGUI>().text = Vol.GetComponent<Slider>().value.ToString();
-
     }
 
     public void Music_VolumeLogic()
@@ -401,7 +415,6 @@ public class SC_MenuLogic : MonoBehaviour
 
     public void Btn_PlayMultiLogic()
     {
-        Debug.Log("Btn_PlayMultiLogic");
         unityObjects["Btn_PlayMulti"].GetComponent<Button>().interactable = false;
         WarpClient.GetInstance().GetRoomsInRange(1, 2);
         UpdateStatus("Seraching for available rooms...");

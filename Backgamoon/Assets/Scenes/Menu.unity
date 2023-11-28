@@ -1425,9 +1425,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1213490616}
-        m_TargetAssemblyTypeName: SC_MenuController, Assembly-CSharp
-        m_MethodName: Btn_Play
+      - m_Target: {fileID: 72601634}
+        m_TargetAssemblyTypeName: SC_MenuLogic, Assembly-CSharp
+        m_MethodName: Btn_PlayMultiLogic
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3158,11 +3158,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1213490614}
+      objectReference: {fileID: 1213490616}
     - target: {fileID: 258467673489479473, guid: 7c4c6bb03f7c7fd45934ebb955005525,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: Btn_PlayMulti
       objectReference: {fileID: 0}
     - target: {fileID: 396469296861694987, guid: 7c4c6bb03f7c7fd45934ebb955005525,
         type: 3}
@@ -3188,6 +3188,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Btn_Options
+      objectReference: {fileID: 0}
+    - target: {fileID: 2049632744452763966, guid: 7c4c6bb03f7c7fd45934ebb955005525,
+        type: 3}
+      propertyPath: m_Name
+      value: btn_MultiPlay
       objectReference: {fileID: 0}
     - target: {fileID: 2313132824705413418, guid: 7c4c6bb03f7c7fd45934ebb955005525,
         type: 3}
@@ -3258,6 +3263,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987393419726762226, guid: 7c4c6bb03f7c7fd45934ebb955005525,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987393419726762226, guid: 7c4c6bb03f7c7fd45934ebb955005525,
+        type: 3}
+      propertyPath: m_WholeNumbers
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3987393419726762226, guid: 7c4c6bb03f7c7fd45934ebb955005525,
         type: 3}

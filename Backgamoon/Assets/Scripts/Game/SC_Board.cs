@@ -64,10 +64,8 @@ public class SC_Board : MonoBehaviour
     {
        DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
        DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
-       if(multiplayer || psudo_multiplayer)
-            camera = GameObject.Find("Main Camera");
-       if(multiplayer)
-            dice_to_send= new int[2];
+       camera = GameObject.Find("Main Camera");
+       dice_to_send= new int[2];
        dice_maneger=GameObject.Find("Sprite_RightDicePair").GetComponent<SC_DicePair>();
        flags= new Dictionary<string, int>();
        curr_dice = new int[2];
@@ -256,9 +254,9 @@ public class SC_Board : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         Sprite_x.SetActive(true);
-        yield return new WaitForSeconds(2);
-        Sprite_x.SetActive(false);
+        yield return new WaitForSeconds(1);
         ChangeTurn();
+        Sprite_x.SetActive(false);
     }
     public void ChangeTurn()
     {

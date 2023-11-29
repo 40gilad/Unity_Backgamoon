@@ -197,6 +197,7 @@ using UnityEngine.Apple;
                     handle_press_as_new_location("Triangle" + dest_triangles[0]);
             }
         }
+
     }
 
     private void handle_press_as_new_location(string name)
@@ -322,7 +323,11 @@ using UnityEngine.Apple;
         if (((pressed_pieces_color == 'O') && turn && (board.flags["Ocaptures"] != 1 || name == "Triangle-1")
             || (pressed_pieces_color == 'G') && !turn && (board.flags["Gcaptures"] != 1 || name == "Triangle24")))
             return true;
-        return false;
+        else
+        {
+            Debug.Log(name + " Not valid press!");
+            return false;
+        }
     }
 
     private bool is_valid_destination(int dest)
@@ -527,8 +532,7 @@ using UnityEngine.Apple;
         turn_off_dest_triangles();
         dest_triangles[0] = -2;
         dest_triangles[1] = -2;
-        if(board.multiplayer)
-            init_moves_dict();
+        init_moves_dict();
     }
 
     private void init_moves_dict()

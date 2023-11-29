@@ -29,9 +29,13 @@ public class SC_DiceManeger : MonoBehaviour
         Roll();
     }
 
-    public void Roll()
+    public void Roll(int x=-1,int y=-1)
     {
-        Roll_Dice(Random.Range(1, 7), Random.Range(1, 7));
+        if (x == -1 && y == -1)
+            Roll_Dice(Random.Range(1, 7), Random.Range(1, 7));
+        else
+            Roll_Dice(x, y);
+
         gameObject.SetActive(false);
     }
 

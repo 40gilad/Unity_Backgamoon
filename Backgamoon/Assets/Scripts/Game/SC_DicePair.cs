@@ -31,7 +31,7 @@ public class SC_DicePair : MonoBehaviour
 
     }
 
-    public void Roll_Dice(int left, int right=0)
+    public void Roll_Dice(int left, int right=0, bool is_from_other_player = false)
     {
         MyDice[0].Set_Dice_Number(left);
         MyDice[1].Set_Dice_Number(right);

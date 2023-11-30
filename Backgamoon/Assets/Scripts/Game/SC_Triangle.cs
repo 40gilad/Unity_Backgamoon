@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SC_Triangle : MonoBehaviour
 {
-    public delegate void Triangle_press_handler(string name);
+    public delegate void Triangle_press_handler(string name,bool is_from_other_player=false);
     public static Triangle_press_handler pressed_triangle;
     public GameObject Sprite_Triangle;
     public GameObject Triangle_Stack;

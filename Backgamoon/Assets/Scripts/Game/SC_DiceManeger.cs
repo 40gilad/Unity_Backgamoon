@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SC_DiceManeger : MonoBehaviour
 {
-    public delegate void Roll_Dice_Handler(int left, int right = 0);
+    public delegate void Roll_Dice_Handler(int left, int right , bool is_from_other_player=false);
     public static Roll_Dice_Handler Roll_Dice;
     GameObject[] DicePairs;
     SC_Board board;

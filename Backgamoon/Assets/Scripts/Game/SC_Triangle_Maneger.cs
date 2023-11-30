@@ -96,7 +96,7 @@ using UnityEngine.Apple;
             direction_accelerator = 0;
     }
 
-    void pressed_triangle(string name)
+    void pressed_triangle(string name,bool is_from_other_player=false)
     {      
         if (get_triangle_number(name) == source_triangle)
         {
@@ -106,22 +106,25 @@ using UnityEngine.Apple;
         turn_off_dest_triangles();
         if (get_triangle_number(name) == dest_triangles[0]
             || get_triangle_number(name) == dest_triangles[1])
-            handle_press_as_new_location(name);
+            handle_press_as_new_location(name,is_from_other_player);
         else if (board.flags["turn_stage"] == 1)//pressing on source triangle
-            handle_press_after_throw(name);
+            handle_press_after_throw(name,is_from_other_player);
     }
 
-    private void Roll_Dice(int left, int right = 0)
+    private void Roll_Dice(int left, int right = 0, bool is_from_other_player=false)
     {
         Debug.Log("Roll_Dice " + left + ", " + right);
         curr_dice[0] = left;
         curr_dice[1] = right;
-        if (!check_available_moves())
+        if (!is_from_other_player)
         {
-            if (board.multiplayer)
-                board.send_data(moves_to_send);
-            no_available_moves();
+            if (!check_available_moves())
+            {
+                if (board.multiplayer)
+                    board.send_data(moves_to_send);
+                no_available_moves();
 
+            }
         }
     }
 
@@ -134,8 +137,7 @@ using UnityEngine.Apple;
         }
         Debug.Log("turn= " + turn);
         StartCoroutine(CR_play_recieved_moves(source, dest));
-
-
+        
     }
 
     private IEnumerator CR_play_recieved_moves(int[] source, int[] dest)
@@ -149,16 +151,16 @@ using UnityEngine.Apple;
                 yield return new WaitForEndOfFrame();
                 Debug.Log("Moves a piece");
                 board.flags["turn_stage"] = 1;
-                pressed_triangle("Triangle" + source[i]);
+                pressed_triangle("Triangle" + source[i],true);
                 board.flags["turn_stage"] = 2;
-                pressed_triangle("Triangle" + dest[i]);
+                pressed_triangle("Triangle" + dest[i],true);
             }
         }
     }
     #endregion
 
     #region Mouse Click Handlers
-    private void handle_press_after_throw(string name)
+    private void handle_press_after_throw(string name,bool is_from_other_player=false)
     {
         Debug.Log("<color=blue> handle_press_after_throw triangle " + name + "</color>");
         source_triangle = get_triangle_number(name);
@@ -184,32 +186,32 @@ using UnityEngine.Apple;
                 if (board.flags["double"] != 1)
                 {
                     if (dest_triangles[0] > LAST_TRIANGLE)
-                        handle_press_as_new_location("Triangle" + dest_triangles[0]);
+                        handle_press_as_new_location("Triangle" + dest_triangles[0],is_from_other_player);
                     if (dest_triangles[1] > LAST_TRIANGLE)
-                        handle_press_as_new_location("Triangle" + dest_triangles[1]);
+                        handle_press_as_new_location("Triangle" + dest_triangles[1],is_from_other_player);
                 }
                 else
-                    handle_press_as_new_location("Triangle" + dest_triangles[0]);
+                    handle_press_as_new_location("Triangle" + dest_triangles[0], is_from_other_player);
             }
             else if (!turn && board.flags["Gendgame"] == 1)
             {
                 if (board.flags["double"] != 1)
                 {
                     if (dest_triangles[0] < FIRST_TRIANGLE)
-                        handle_press_as_new_location("Triangle" + dest_triangles[0]);
+                        handle_press_as_new_location("Triangle" + dest_triangles[0], is_from_other_player);
                     if (dest_triangles[1] < FIRST_TRIANGLE)
-                        handle_press_as_new_location("Triangle" + dest_triangles[1]);
+                        handle_press_as_new_location("Triangle" + dest_triangles[1], is_from_other_player);
                 }
                 else
-                    handle_press_as_new_location("Triangle" + dest_triangles[0]);
+                    handle_press_as_new_location("Triangle" + dest_triangles[0], is_from_other_player);
             }
         }
 
     }
 
-    private void handle_press_as_new_location(string name)
+    private void handle_press_as_new_location(string name,bool is_from_other_player=false)
     {
-        Debug.Log("handle_press_as_new_location " + name + "turn_moves will be= " + (turn_moves + 1));
+        Debug.Log("handle_press_as_new_location " + name + "is other player= " + (is_from_other_player));
         int dest_triangle = get_triangle_number(name);
         if (dest_triangle >= FIRST_TRIANGLE && dest_triangle <= LAST_TRIANGLE) //triangle number is in game scope
         {
@@ -275,7 +277,8 @@ using UnityEngine.Apple;
         turn_off_dest_triangles();
         turn_moves++;
         end_move(dest_triangle);
-        StartCoroutine(CR_check_available_moves());
+        if(!is_from_other_player)
+            StartCoroutine(CR_check_available_moves());
 
     }
     #endregion
@@ -297,6 +300,7 @@ using UnityEngine.Apple;
 
     public void play_singleplayer()
     {
+        Debug.Log("play_singleplayer");
         int moves = 0;
         if (board.flags["double"] == 0)
             moves = 2;
@@ -700,6 +704,10 @@ using UnityEngine.Apple;
         if (turn_moves >= 1 && !check_available_moves())
         {
             no_available_moves();
+            string Skey_source = string.Join(",", key_source);
+            string Sval_dest = string.Join(",", val_dest);
+            moves_to_send["moves"].Add(Skey_source, Sval_dest);
+            board.send_data(moves_to_send);
         }
     }
 

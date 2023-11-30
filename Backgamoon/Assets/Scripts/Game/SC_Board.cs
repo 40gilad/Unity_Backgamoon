@@ -120,7 +120,7 @@ public class SC_Board : MonoBehaviour
     #endregion
 
     #region Delegates
-    private void Roll_Dice(int left, int right = 0)
+    private void Roll_Dice(int left, int right = 0,bool is_from_other_player=false)
     {
         flags["turn_stage"] = 1;
         curr_dice[0] = left;
@@ -214,11 +214,9 @@ public class SC_Board : MonoBehaviour
                     string[] parts = diceData.Split(':');
                     int leftDiceValue = int.Parse(parts[0]);
                     int rightDiceValue = int.Parse(parts[1]);
-                    dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue);
+                    dice_maneger.Roll_Dice(leftDiceValue, rightDiceValue,true);
                     Triangle_Maneger.curr_dice[0] = leftDiceValue;
                     Triangle_Maneger.curr_dice[1] = rightDiceValue;
-
-
 
                 }
                 if (data.ContainsKey("moves"))
@@ -297,10 +295,11 @@ public class SC_Board : MonoBehaviour
 
     private IEnumerator CR_No_Moves()
     {
-        Sprite_x.SetActive(true);
-        yield return new WaitForSeconds(1);
-        ChangeTurn();
-        Sprite_x.SetActive(false);
+
+            Sprite_x.SetActive(true);
+            yield return new WaitForSeconds(1);
+            ChangeTurn();
+            Sprite_x.SetActive(false);
     }
     public void ChangeTurn()
     {

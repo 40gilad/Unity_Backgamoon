@@ -80,6 +80,7 @@ public class SC_MenuLogic : MonoBehaviour
         Listener.OnGetLiveRoomInfo += OnGetLiveRoomInfo;
         Listener.OnUserJoinRoom += OnUserJoinRoom;
         Listener.OnGameStarted += OnGameStarted;
+        
     }
 
 
@@ -322,6 +323,23 @@ public class SC_MenuLogic : MonoBehaviour
         unityObjects["Board"].GetComponent<SC_Board>().StartGame(_NextTurn);
     }
 
+    public void onUserLeftRoom(string username)
+    {
+        if (username != GlobalVars.userId)
+        { //not me
+            if (username == GlobalVars.orange)
+            {
+                Debug.Log("Orange Left The Room");
+                board.finish_game('G',true);
+            }
+            else
+            {
+                Debug.Log("Green Left The Room");
+                board.finish_game('O',true);
+
+            }
+        }
+    }
     #endregion
 
     #region Controller

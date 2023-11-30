@@ -289,7 +289,7 @@ namespace AssemblyCSharp
 		
 		public void onUserLeftRoom (RoomData eventObj, string username)
 		{
-			Debug.Log ("onUserLeftRoom : " + username);
+			GameObject.Find("SC_MenuLogic").GetComponent<SC_MenuLogic>().onUserLeftRoom(username);
 		}
 		
 		public void onUserJoinedRoom (RoomData eventObj, string username)

@@ -13,7 +13,7 @@ using UnityEngine.Apple;
     public static Finish_Move_Handler finish_turn;
     public delegate void No_Moves_Handler();
     public static No_Moves_Handler no_available_moves;
-    public delegate void Game_Finished_Handler(char color);
+    public delegate void Game_Finished_Handler(char color,bool is_left=false);
     public static Game_Finished_Handler game_finished;
 
     /**************************************** CONSTANTS ****************************************/
@@ -133,21 +133,27 @@ using UnityEngine.Apple;
             board.flags["double"] = 1;
         }
         Debug.Log("turn= " + turn);
+        StartCoroutine(CR_play_recieved_moves(source, dest));
+
+
+    }
+
+    private IEnumerator CR_play_recieved_moves(int[] source, int[] dest)
+    {
         for (int i = 0; i < 4; i++)
         {
             Debug.Log("i= " + i);
             Debug.Log("Playing " + source[i] + " -> " + dest[i]);
             if (source[i] != -2)
             {
+                yield return new WaitForEndOfFrame();
                 Debug.Log("Moves a piece");
                 board.flags["turn_stage"] = 1;
                 pressed_triangle("Triangle" + source[i]);
                 board.flags["turn_stage"] = 2;
                 pressed_triangle("Triangle" + dest[i]);
-                StartCoroutine(CR_wait_frame());
             }
         }
-
     }
     #endregion
 

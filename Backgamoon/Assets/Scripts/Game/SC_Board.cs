@@ -26,6 +26,8 @@ public class SC_Board : MonoBehaviour
     GameObject[] DiceRoller = new GameObject[2];
     GameObject OrangeWon;
     GameObject GreenWon;
+    GameObject GreenLeft;
+    GameObject OrangeLeft;
     public Dictionary<string, int> flags;
     int[] curr_dice;
     int[] dice_to_send;
@@ -69,6 +71,8 @@ public class SC_Board : MonoBehaviour
        DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
         OrangeWon = GameObject.Find("OrangeWon");
         GreenWon = GameObject.Find("GreenWon");
+        OrangeLeft = GameObject.Find("OrangeLeft");
+        GreenLeft = GameObject.Find("GreenLeft");
         camera = GameObject.Find("Main Camera");
        dice_to_send= new int[2];
        dice_maneger=GameObject.Find("Sprite_RightDicePair").GetComponent<SC_DicePair>();
@@ -82,6 +86,8 @@ public class SC_Board : MonoBehaviour
         is_game_init = false;
         OrangeWon.SetActive(false);
         GreenWon.SetActive(false);
+        OrangeLeft.SetActive(false);
+        GreenLeft.SetActive(false);
         turn = false;
         init_flags();
         ChangeTurn();
@@ -135,28 +141,42 @@ public class SC_Board : MonoBehaviour
         ChangeTurn();
     }
 
-    private void finish_game(char color)
+    public void finish_game(char color, bool is_left=false)
     {
         DiceRoller[0].SetActive(false);
         DiceRoller[1].SetActive(false);
         dice_maneger.gameObject.SetActive(false);
-        StartCoroutine(CR_winner(color));
+        StartCoroutine(CR_winner(color,is_left));
         //menu_logic.Btn_Logic("Screen_MainMenu");
     }
 
-    private IEnumerator CR_winner(char color)
+    private IEnumerator CR_winner(char color,bool is_left=false)
     {
         GameObject Winner = null;
-
-        if(color == 'O')
+        GameObject Left=null;
+        if (color == 'O')
+        {
             Winner = OrangeWon;
+            if(is_left)
+                Left = GreenLeft;
+
+        }
         else if (color == 'G')
+        {
             Winner = GreenWon;
+            if (is_left)
+                Left = OrangeLeft;
+
+        }
 
         if (Winner != null) {
             Winner.SetActive(true);
-            yield return new WaitForSeconds(3);
+            if(Left!=null)
+                Left.SetActive(true);
+            yield return new WaitForSeconds(5);
             Winner.SetActive(false);
+            if (Left != null)
+                Left.SetActive(false);
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -382,4 +402,5 @@ public class SC_Board : MonoBehaviour
         return (GlobalVars.orange == GlobalVars.userId && turn) || 
             (GlobalVars.orange != GlobalVars.userId && !turn);
     }
+
 }

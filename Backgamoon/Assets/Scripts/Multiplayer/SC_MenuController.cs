@@ -7,6 +7,7 @@ public class SC_MenuController : MonoBehaviour
     public SC_MenuLogic CurrMenuLogic;
     bool multiplayer = true;
 
+
     public void Btn_Singleplayer()
     {
         multiplayer = false;

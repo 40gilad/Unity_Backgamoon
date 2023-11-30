@@ -24,6 +24,8 @@ public class SC_Board : MonoBehaviour
     GameObject Sprite_x;
     GameObject camera;
     GameObject[] DiceRoller = new GameObject[2];
+    GameObject OrangeWon;
+    GameObject GreenWon;
     public Dictionary<string, int> flags;
     int[] curr_dice;
     int[] dice_to_send;
@@ -35,6 +37,7 @@ public class SC_Board : MonoBehaviour
     private SC_DicePair dice_maneger = null;
     public SC_Triangle_Maneger Triangle_Maneger;
     bool is_game_init;
+    public SC_MenuLogic menu_logic;
 
     #region README
     /************************************************************************************************/
@@ -64,7 +67,9 @@ public class SC_Board : MonoBehaviour
     {
        DiceRoller[0] = GameObject.Find("Sprite_LeftRollDice");
        DiceRoller[1] = GameObject.Find("Sprite_RightRollDice");
-       camera = GameObject.Find("Main Camera");
+        OrangeWon = GameObject.Find("OrangeWon");
+        GreenWon = GameObject.Find("GreenWon");
+        camera = GameObject.Find("Main Camera");
        dice_to_send= new int[2];
        dice_maneger=GameObject.Find("Sprite_RightDicePair").GetComponent<SC_DicePair>();
        flags= new Dictionary<string, int>();
@@ -75,6 +80,8 @@ public class SC_Board : MonoBehaviour
     void Start()
     {
         is_game_init = false;
+        OrangeWon.SetActive(false);
+        GreenWon.SetActive(false);
         turn = false;
         init_flags();
         ChangeTurn();
@@ -89,6 +96,7 @@ public class SC_Board : MonoBehaviour
         SC_Triangle_Maneger.no_available_moves += No_Moves;
         SC_Triangle_Maneger.game_finished += finish_game;
         Listener.OnMoveCompleted += OnMoveCompleted;
+
     }
 
     private void OnDisable()
@@ -129,12 +137,29 @@ public class SC_Board : MonoBehaviour
 
     private void finish_game(char color)
     {
-        if (color == 'O')
-            Debug.Log("<color=orange>display: ORANGE WON!!</color>");
-        if(color=='G')
-            Debug.Log("<color=green>display: GREEN WON!!</color>");
+        DiceRoller[0].SetActive(false);
+        DiceRoller[1].SetActive(false);
+        dice_maneger.gameObject.SetActive(false);
+        StartCoroutine(CR_winner(color));
+        //menu_logic.Btn_Logic("Screen_MainMenu");
     }
 
+    private IEnumerator CR_winner(char color)
+    {
+        GameObject Winner = null;
+
+        if(color == 'O')
+            Winner = OrangeWon;
+        else if (color == 'G')
+            Winner = GreenWon;
+
+        if (Winner != null) {
+            Winner.SetActive(true);
+            yield return new WaitForSeconds(3);
+            Winner.SetActive(false);
+        }
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     public void StartGame(string _NextTurn)
     {
         Debug.Log("Board StartGame Room owner= " + GlobalVars.orange + "myId= "+GlobalVars.userId);
@@ -252,7 +277,6 @@ public class SC_Board : MonoBehaviour
 
     private IEnumerator CR_No_Moves()
     {
-        yield return new WaitForSeconds(1);
         Sprite_x.SetActive(true);
         yield return new WaitForSeconds(1);
         ChangeTurn();
@@ -339,7 +363,14 @@ public class SC_Board : MonoBehaviour
             DiceRoller[0].SetActive(false);
             DiceRoller[1].SetActive(false);
         }
+        /*
         else if (is_game_init)
+        {
+            DiceRoller[0].SetActive(!turn);
+            DiceRoller[1].SetActive(turn);
+        }
+        */
+        else
         {
             DiceRoller[0].SetActive(!turn);
             DiceRoller[1].SetActive(turn);

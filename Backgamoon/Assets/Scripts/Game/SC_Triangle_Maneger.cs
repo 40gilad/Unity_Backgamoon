@@ -118,9 +118,10 @@ using UnityEngine.Apple;
         curr_dice[1] = right;
         if (!check_available_moves())
         {
-            no_available_moves();
-            if(board.multiplayer)
+            if (board.multiplayer)
                 board.send_data(moves_to_send);
+            no_available_moves();
+
         }
     }
 

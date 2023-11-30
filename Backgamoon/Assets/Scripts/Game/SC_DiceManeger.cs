@@ -39,5 +39,4 @@ public class SC_DiceManeger : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-
 }
